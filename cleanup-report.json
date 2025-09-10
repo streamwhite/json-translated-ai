@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-07-03T04:02:57.921Z",
+  "summary": {
+    "totalFiles": 27,
+    "filesCleaned": 27,
+    "totalExtraKeysRemoved": 227,
+    "totalMetricsFixed": 174,
+    "totalChanges": 401,
+    "errors": []
+  },
+  "details": {
+    "extraKeysRemoved": 227,
+    "metricsFixed": 174,
+    "filesProcessed": [
+      "ar",
+      "cs",
+      "da",
+      "de",
+      "el",
+      "es",
+      "et",
+      "fi",
+      "fr",
+      "hr",
+      "it",
+      "ja",
+      "ko",
+      "lt",
+      "lv",
+      "ms",
+      "nl",
+      "no",
+      "pl",
+      "pt",
+      "ro",
+      "sk",
+      "sl",
+      "sr",
+      "sv",
+      "tr",
+      "uk"
+    ],
+    "errors": []
+  }
+}

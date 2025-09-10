@@ -1,0 +1,299 @@
+{
+  "timestamp": "2025-07-03T06:42:53.297Z",
+  "summary": {
+    "totalLanguages": 28,
+    "completeLanguages": 28,
+    "incompleteLanguages": 0,
+    "languagesWithExtras": 0,
+    "languagesWithDataTypeIssues": 0,
+    "languagesWithEmptyValues": 0
+  },
+  "analysis": [
+    {
+      "lang": "ar",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "cs",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "da",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "de",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "el",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "en",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "es",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "et",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "fi",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "fr",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "hr",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "it",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "ja",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "ko",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "lt",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "lv",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "ms",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "nl",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "no",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "pl",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "pt",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "ro",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "sk",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "sl",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "sr",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "sv",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "tr",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    },
+    {
+      "lang": "uk",
+      "completionRate": 100,
+      "totalKeys": 289,
+      "templateKeys": 289,
+      "missingKeys": [],
+      "extraKeys": [],
+      "isComplete": true,
+      "hasExtras": false
+    }
+  ],
+  "recommendations": {
+    "incompleteLanguages": [],
+    "languagesWithExtras": [],
+    "languagesWithDataTypeIssues": [],
+    "languagesWithEmptyValues": []
+  }
+}

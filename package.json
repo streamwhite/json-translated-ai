@@ -1,0 +1,67 @@
+{
+  "name": "json-translated-ai",
+  "version": "1.2.4",
+  "description": "AI-powered translation tool supporting OpenAI GPT, Anthropic Claude, and Google Gemini models",
+  "main": "main-app.js",
+  "bin": {
+    "jta": "./main-app.js"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node main-app.js",
+    "test": "node __tests__/test-runner.js",
+    "lint": "npm run lint:js",
+    "lint:js": "eslint . --ext .js,.mjs",
+    "publish:npm": "npm version patch && npm publish"
+  },
+  "keywords": [
+    "json translation ai",
+    "translation",
+    "i18n",
+    "ai",
+    "openai",
+    "anthropic",
+    "google",
+    "gpt",
+    "claude",
+    "gemini",
+    "json",
+    "cli",
+    "content translations",
+    "translate json files",
+    "ai powered translation tool",
+    "multilingual content management",
+    "automated translation workflow",
+    "bulk translation processing",
+    "json localization tool",
+    "translate configuration files",
+    "ai translation api wrapper",
+    "command line translation tool",
+    "batch translation processor",
+    "internationalization automation",
+    "translate json objects",
+    "ai language translation service",
+    "multi provider translation",
+    "translation cache management",
+    "parallel translation processing",
+    "translation quality assurance",
+    "json file translator"
+  ],
+  "author": "",
+  "license": "Apache License 2.0",
+  "dependencies": {
+    "cli-progress": "^3.12.0",
+    "dotenv": "^16.0.0",
+    "openai": "^4.0.0",
+    "@anthropic-ai/sdk": "^0.61.0",
+    "@google/generative-ai": "^0.24.1",
+    "ora": "^8.2.0",
+    "retry": "^0.13.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
