@@ -85,19 +85,17 @@ export function createRetryOperation(operation, operationType = 'individual') {
  * @param {string} text - Text to translate
  * @param {string} targetLanguage - Target language
  * @param {string} key - Translation key
- * @param {string} purposeContext - Purpose context
  * @returns {Promise<string>} - Translated text or fallback
  */
 export async function retryIndividualTranslation(
   translateFn,
   text,
   targetLanguage,
-  key,
-  purposeContext
+  key
 ) {
   try {
     return await createRetryOperation(
-      () => translateFn(text, targetLanguage, key, 0, purposeContext),
+      () => translateFn(text, targetLanguage, key, 0),
       'individual'
     );
   } catch (error) {
@@ -114,19 +112,17 @@ export async function retryIndividualTranslation(
  * @param {Array} texts - Array of texts to translate
  * @param {string} targetLanguage - Target language
  * @param {Array} keys - Array of translation keys
- * @param {string} purposeContext - Purpose context
  * @returns {Promise<Array>} - Array of translated texts or fallbacks
  */
 export async function retryBatchTranslation(
   translateBatchFn,
   texts,
   targetLanguage,
-  keys,
-  purposeContext
+  keys
 ) {
   try {
     return await createRetryOperation(
-      () => translateBatchFn(texts, targetLanguage, keys, purposeContext, 0),
+      () => translateBatchFn(texts, targetLanguage, keys, 0),
       'batch'
     );
   } catch (error) {
@@ -144,8 +140,7 @@ export async function retryBatchTranslation(
               : translateBatchFn,
             texts[i],
             targetLanguage,
-            keys[i],
-            purposeContext
+            keys[i]
           );
           fallbackResults[i] = fallbackTranslation;
         } catch (fallbackError) {

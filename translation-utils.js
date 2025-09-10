@@ -8,12 +8,33 @@ export function getAllKeys(obj, prefix = '') {
     const fullKey = prefix ? `${prefix}.${key}` : key;
 
     if (Array.isArray(obj[key])) {
-      // Handle arrays - add keys for each element using dot notation
+      // Handle arrays - add keys for each element using bracket notation
       for (let i = 0; i < obj[key].length; i++) {
-        const elementKey = `${fullKey}.${i}`;
+        const elementKey = `${fullKey}[${i}]`;
         const element = obj[key][i];
 
-        if (typeof element === 'object' && element !== null) {
+        if (Array.isArray(element)) {
+          // Handle nested arrays - recursively process with bracket notation
+          // For nested arrays, we need to process each element with bracket notation
+          for (let j = 0; j < element.length; j++) {
+            const nestedElementKey = `${elementKey}[${j}]`;
+            const nestedElement = element[j];
+
+            if (Array.isArray(nestedElement)) {
+              // Handle deeply nested arrays
+              keys.push(...getAllKeys(nestedElement, nestedElementKey));
+            } else if (
+              typeof nestedElement === 'object' &&
+              nestedElement !== null
+            ) {
+              // Handle objects within nested arrays
+              keys.push(...getAllKeys(nestedElement, nestedElementKey));
+            } else {
+              // Add individual nested array element keys
+              keys.push(nestedElementKey);
+            }
+          }
+        } else if (typeof element === 'object' && element !== null) {
           // Recursively process nested objects within arrays
           keys.push(...getAllKeys(element, elementKey));
         } else {
@@ -32,9 +53,50 @@ export function getAllKeys(obj, prefix = '') {
   return keys;
 }
 
-// Function to get value from nested object using dot notation and array indices
+// Function to get value from nested object using dot notation and bracket notation for arrays
 export function getNestedValue(obj, path) {
-  return path.split('.').reduce((current, key) => {
+  // Parse the path to handle both dot notation and bracket notation
+  const keys = [];
+  let currentPath = path;
+
+  while (currentPath.length > 0) {
+    const bracketMatch = currentPath.match(/^([^[.]+)\[(\d+)\]/);
+    if (bracketMatch) {
+      // Found bracket notation like "array[0]"
+      keys.push(bracketMatch[1]); // array name
+      keys.push(bracketMatch[2]); // index
+      currentPath = currentPath.substring(bracketMatch[0].length);
+      if (currentPath.startsWith('.')) {
+        currentPath = currentPath.substring(1); // Remove leading dot
+      }
+    } else if (currentPath.startsWith('[')) {
+      // Handle consecutive bracket notation like "[1]" after "array[0]"
+      const bracketIndexMatch = currentPath.match(/^\[(\d+)\]/);
+      if (bracketIndexMatch) {
+        keys.push(bracketIndexMatch[1]); // index
+        currentPath = currentPath.substring(bracketIndexMatch[0].length);
+        if (currentPath.startsWith('.')) {
+          currentPath = currentPath.substring(1); // Remove leading dot
+        }
+      } else {
+        // Invalid bracket syntax, treat as regular key
+        keys.push(currentPath);
+        break;
+      }
+    } else {
+      // Handle dot notation
+      const dotIndex = currentPath.indexOf('.');
+      if (dotIndex === -1) {
+        keys.push(currentPath);
+        break;
+      } else {
+        keys.push(currentPath.substring(0, dotIndex));
+        currentPath = currentPath.substring(dotIndex + 1);
+      }
+    }
+  }
+
+  return keys.reduce((current, key) => {
     // Check if this is a numeric key (array index)
     const isNumericKey = /^\d+$/.test(key);
 
@@ -47,9 +109,35 @@ export function getNestedValue(obj, path) {
   }, obj);
 }
 
-// Function to set value in nested object using dot notation and array indices
+// Function to set value in nested object using dot notation and bracket notation for arrays
 export function setNestedValue(obj, path, value) {
-  const keys = path.split('.');
+  // Parse the path to handle both dot notation and bracket notation
+  const keys = [];
+  let currentPath = path;
+
+  while (currentPath.length > 0) {
+    const bracketMatch = currentPath.match(/^([^[.]+)\[(\d+)\]/);
+    if (bracketMatch) {
+      // Found bracket notation like "array[0]"
+      keys.push(bracketMatch[1]); // array name
+      keys.push(bracketMatch[2]); // index
+      currentPath = currentPath.substring(bracketMatch[0].length);
+      if (currentPath.startsWith('.')) {
+        currentPath = currentPath.substring(1); // Remove leading dot
+      }
+    } else {
+      // Handle dot notation
+      const dotIndex = currentPath.indexOf('.');
+      if (dotIndex === -1) {
+        keys.push(currentPath);
+        break;
+      } else {
+        keys.push(currentPath.substring(0, dotIndex));
+        currentPath = currentPath.substring(dotIndex + 1);
+      }
+    }
+  }
+
   let current = obj;
   let parents = [];
   let parentKeys = [];

@@ -7,7 +7,11 @@ import {
 } from './cache-manager.js';
 import { OPTIMIZATION_CONFIG } from './config.js';
 import { validateLanguageCode } from './language-utils.js';
-import { updateTranslationSpinner } from './progress-utils.js';
+import {
+  stopTranslationSpinner,
+  updateTranslationSpinner,
+} from './progress-utils.js';
+import { createSystemPrompt } from './system-message-utils.js';
 import { translateText } from './translation-core.js';
 import { translationFailureReporter } from './translation-failure-reporter.js';
 
@@ -15,7 +19,6 @@ export async function translateBatch(
   texts,
   targetLanguage,
   keys,
-  purposeContext,
   model,
   retryCount = 0
 ) {
@@ -61,10 +64,10 @@ export async function translateBatch(
 
       const validatedLanguage = validateLanguageCode(targetLanguage);
       const batchPrompt = createBatchPrompt(uncachedTexts);
-      const systemPrompt = createBatchSystemPrompt(
+      const systemPrompt = createSystemPrompt(
         validatedLanguage,
         targetLanguage,
-        purposeContext
+        true // isBatch = true for batch translation
       );
       const userPrompt = `Translate these texts to ${
         validatedLanguage || targetLanguage
@@ -120,14 +123,26 @@ export async function translateBatch(
       await applyBatchRateLimiting(completion);
       const results = combineResults(texts, translations, uncachedIndices);
       console.log(`  ✅ Batch translated ${uncachedTexts.length} texts`);
+
+      // Stop the translation spinner since batch is complete
+      stopTranslationSpinner(
+        true,
+        `Batch of ${uncachedTexts.length} texts completed`
+      );
+
       return results;
     } catch (error) {
+      // Stop the translation spinner since batch failed
+      stopTranslationSpinner(
+        false,
+        `Batch translation failed: ${error.message}`
+      );
+
       return await handleBatchError(
         error,
         texts,
         keys,
         targetLanguage,
-        purposeContext,
         model,
         retryCount
       );
@@ -187,39 +202,7 @@ function createBatchPrompt(uncachedTexts) {
     .join('\n');
 }
 
-function createBatchSystemPrompt(
-  validatedLanguage,
-  targetLanguage,
-  purposeContext
-) {
-  const customSystemMessage = process.env.CUSTOM_SYSTEM_MESSAGE;
-
-  if (customSystemMessage) {
-    return `You are a professional translator. ${customSystemMessage}
-
-Translate the given texts to ${validatedLanguage || targetLanguage}.
-
-Important guidelines:
-- Keep technical terms in English when appropriate (React, Next.js, TypeScript, etc.)
-- Preserve any HTML tags or placeholders like {variable}
-- Keep the translation natural and fluent
-- This translation will be used in a ${purposeContext}, so maintain appropriate tone and style for ${purposeContext} content
-- Return only the translated texts, numbered exactly as provided
-- Do not include explanations or additional text`;
-  }
-
-  return `You are a professional translator. Translate the given texts to ${
-    validatedLanguage || targetLanguage
-  }.
-
-Important guidelines:
-- Keep technical terms in English when appropriate (React, Next.js, TypeScript, etc.)
-- Preserve any HTML tags or placeholders like {variable}
-- Keep the translation natural and fluent
-- This translation will be used in a ${purposeContext}, so maintain appropriate tone and style for ${purposeContext} content
-- Return only the translated texts, numbered exactly as provided
-- Do not include explanations or additional text`;
-}
+// System prompt creation is now handled by the centralized utility
 
 function parseBatchResponse(translatedBatch) {
   return translatedBatch
@@ -270,7 +253,6 @@ async function handleBatchError(
   texts,
   keys,
   targetLanguage,
-  purposeContext,
   model,
   retryCount = 0
 ) {
@@ -296,7 +278,6 @@ async function handleBatchError(
         texts,
         targetLanguage,
         keys,
-        purposeContext,
         model,
         retryCount + 1
       );
@@ -312,7 +293,6 @@ async function handleBatchError(
       texts,
       keys,
       targetLanguage,
-      purposeContext,
       model
     );
   }
@@ -324,9 +304,13 @@ async function fallbackToIndividualTranslations(
   texts,
   keys,
   targetLanguage,
-  purposeContext,
   model
 ) {
+  // Update spinner to show fallback processing
+  updateTranslationSpinner(
+    `Falling back to individual translations (${texts.length} texts)`
+  );
+
   const fallbackResults = [];
   for (let i = 0; i < texts.length; i++) {
     if (typeof texts[i] === 'string' && texts[i].trim() !== '') {
@@ -336,7 +320,6 @@ async function fallbackToIndividualTranslations(
           targetLanguage,
           keys[i],
           0,
-          purposeContext,
           model
         );
         fallbackResults[i] = fallbackTranslation;
@@ -354,5 +337,12 @@ async function fallbackToIndividualTranslations(
       fallbackResults[i] = texts[i];
     }
   }
+
+  // Stop the spinner since fallback processing is complete
+  stopTranslationSpinner(
+    true,
+    `Fallback processing completed (${texts.length} texts)`
+  );
+
   return fallbackResults;
 }

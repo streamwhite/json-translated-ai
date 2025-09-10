@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export function parseArguments(args = process.argv.slice(2)) {
-  let localesDir = path.join(__dirname, '../../locales');
+  let localesDir = path.join(__dirname, 'locales');
   let languageFile = null;
   let cacheFile = path.join(__dirname, 'translation-cache.json');
   let performancePreset = null;
@@ -129,23 +129,11 @@ Presets:
 
 Models:
 ${Object.entries(SUPPORTED_MODELS)
-  .filter(([id]) => {
-    // Only show models that are listed in the readme
-    const readmeModels = [
-      'gpt-4o-mini',
-      'gpt-4.1',
-      'gpt-4o',
-      'claude-3-5-sonnet-20241022',
-      'claude-3-haiku-20240307',
-      'gemini-2.5-flash',
-    ];
-    return readmeModels.includes(id);
-  })
   .map(([id, model]) => {
     const rec = model.recommended ? '⭐' : '';
     const cost =
       model.cost === 'low' ? '💰' : model.cost === 'medium' ? '💰💰' : '💰💰💰';
-    return `  ${id.padEnd(25)} ${rec} ${cost} ${model.name}`;
+    return `  ${id.padEnd(30)} ${rec} ${cost} ${model.name}`;
   })
   .join('\n')}
 
@@ -154,18 +142,18 @@ Default: ${DEFAULT_MODEL_NAME} ⭐
 Examples:
   jta                                # Default settings
   jta -f ./locales                   # Custom folder
-  jta -m claude-3-haiku-20240307     # Claude model
-  jta -m gemini-2.5-flash            # Gemini model
+  jta -m anthropic/claude-3-haiku    # Claude model
+  jta -m google/gemini-2.5-flash     # Gemini model
   jta -p FAST                        # Fast preset
   jta -k your_key                    # Direct API key
-  jta -u https://your-proxy.com/v1   # Custom proxy URL
+  jta -u https://openrouter.ai/api/v1 # OpenRouter proxy URL
   jta -s "E-commerce website translations"  # Custom context
   jta -l languages.txt               # Specific languages
   jta -c /path/to/custom-cache.json  # Custom cache file
 
 Environment Variables:
-  PROVIDER_KEY         API key for AI provider (required)
-  PROVIDER_PROXY_URL   Custom proxy endpoint (optional)
+  PROVIDER_KEY         OpenRouter API key (required)
+  PROVIDER_PROXY_URL   OpenRouter proxy URL (required)
 `);
 }
 
@@ -196,11 +184,18 @@ export function validateSettings(localesDir, languageFile) {
 }
 
 export function validateEnvironment() {
-  // Support both new and old environment variable names for backward compatibility
-  const hasProviderKey = process.env.PROVIDER_KEY || process.env.OPENAI_API_KEY;
+  const hasProviderKey = process.env.PROVIDER_KEY;
+  const hasProxyUrl = process.env.PROVIDER_PROXY_URL;
+
   if (!hasProviderKey) {
     throw new Error(
-      'PROVIDER_KEY or OPENAI_API_KEY not found in environment variables'
+      'PROVIDER_KEY not found in environment variables. Please set your OpenRouter API key.'
+    );
+  }
+
+  if (!hasProxyUrl) {
+    throw new Error(
+      'PROVIDER_PROXY_URL not found in environment variables. Please set your OpenRouter proxy URL.'
     );
   }
 }

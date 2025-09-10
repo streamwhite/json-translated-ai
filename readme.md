@@ -33,16 +33,13 @@ A CLI tool that automatically synchronizes and translates JSON translation files
 npm install -g json-translated-ai
 ```
 
-### 2. Configure AI Provider
+### 2. Configure OpenRouter
 
-Set your API key in your environment or `.env` file:
+Set your OpenRouter API key and proxy URL in your environment or `.env` file:
 
 ```bash
-PROVIDER_KEY=your_api_key_here
-
-
-# Optional: Custom proxy endpoint
-PROVIDER_PROXY_URL=https://your-proxy-endpoint.com/v1
+PROVIDER_KEY=your_openrouter_api_key_here
+PROVIDER_PROXY_URL=https://openrouter.ai/api/v1
 ```
 
 ### 3. Run Translation
@@ -53,14 +50,14 @@ PROVIDER_PROXY_URL=https://your-proxy-endpoint.com/v1
 jta --folder ./locales
 
 # Use a specific AI model
-jta --model claude-3-haiku-20240307
-jta --model gemini-2.0-flash-exp
+jta --model anthropic/claude-3-haiku
+jta --model google/gemini-2.5-flash
 
 # Use performance preset
 jta --preset FAST
 
 # Specify API key and proxy URL directly
-jta --key your_api_key --url https://your-proxy.com/v1
+jta --key your_openrouter_key --url https://openrouter.ai/api/v1
 ```
 
 ## 🤖 Supported AI Models
@@ -69,18 +66,18 @@ We select the most Cost-effective or capable models for translation.
 
 ### OpenAI Models
 
-- **GPT-4o Mini** ⭐💰 - Cost-effective GPT-4 model (default)
-- **GPT-4.1** 💰💰 - Latest GPT-4 model with improved performance
-- **GPT-4o** 💰💰 - Fast and efficient GPT-4 model
+- **openai/gpt-4o-mini** ⭐💰 - Cost-effective GPT-4 model (default)
+- **openai/gpt-4.1** 💰💰 - Latest GPT-4 model with improved performance
+- **openai/gpt-4o** 💰💰 - Fast and efficient GPT-4 model
 
 ### Anthropic Models
 
-- **Claude 3.5 Sonnet** ⭐💰💰 - Claude model with excellent performance
-- **Claude 3 Haiku** ⭐💰 - Fast and cost-effective Claude model
+- **anthropic/claude-3.5-sonnet** ⭐💰💰 - Claude model with excellent performance
+- **anthropic/claude-3-haiku** ⭐💰 - Fast and cost-effective Claude model
 
 ### Google Models
 
-- **Gemini 2.5 Flash** ⭐💰 - Fast and efficient Gemini model
+- **google/gemini-2.5-flash** ⭐💰 - Fast and efficient Gemini model
 
 ## 🎯 Usage Examples
 
@@ -94,7 +91,7 @@ jta -h
 
 
 # Combine options
-jta --folder ./locales --languages languages.txt --model  claude-3-haiku-20240307 --preset FAST --system "E-commerce website translations --cache /path/to/custom-cache.json"
+jta --folder ./locales --languages languages.txt --model anthropic/claude-3-haiku --preset FAST --system "E-commerce website translations" --cache /path/to/custom-cache.json
 ```
 
 ## ⚙️ Configuration
@@ -166,6 +163,7 @@ The system message is prepended to the default translation instructions, allowin
 1. **API Key Not Found**
 
    - Ensure `PROVIDER_KEY` is set in environment or `.env` file
+   - Ensure `PROVIDER_PROXY_URL` is set to your OpenRouter proxy URL
 
 2. **Rate Limiting**
 
@@ -177,9 +175,10 @@ The system message is prepended to the default translation instructions, allowin
    - Check available models with `jta --help`
    - Ensure you're using a supported model ID
 
-4. **Proxy Connection Issues**
-   - Verify `PROVIDER_PROXY_URL` is correct
-   - Check network connectivity to proxy endpoint
+4. **OpenRouter Connection Issues**
+   - Verify `PROVIDER_PROXY_URL` is set to `https://openrouter.ai/api/v1`
+   - Check network connectivity to OpenRouter endpoint
+   - Ensure your OpenRouter API key is valid and has sufficient credits
 
 ## 🤝 Contributing
 

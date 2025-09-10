@@ -25,13 +25,13 @@ describe('Translation Utils - Array Handling', () => {
       };
 
       const keys = getAllKeys(template);
-      expect(keys).toContain('tags.0');
-      expect(keys).toContain('tags.1');
-      expect(keys).toContain('tags.2');
-      expect(keys).toContain('numbers.0');
-      expect(keys).toContain('numbers.4');
-      expect(keys).toContain('booleans.0');
-      expect(keys).toContain('booleans.2');
+      expect(keys).toContain('tags[0]');
+      expect(keys).toContain('tags[1]');
+      expect(keys).toContain('tags[2]');
+      expect(keys).toContain('numbers[0]');
+      expect(keys).toContain('numbers[4]');
+      expect(keys).toContain('booleans[0]');
+      expect(keys).toContain('booleans[2]');
     });
 
     test('should handle nested arrays', () => {
@@ -44,15 +44,15 @@ describe('Translation Utils - Array Handling', () => {
       };
 
       const keys = getAllKeys(template);
-      expect(keys).toContain('matrix.0.0');
-      expect(keys).toContain('matrix.0.1');
-      expect(keys).toContain('matrix.0.2');
-      expect(keys).toContain('matrix.1.0');
-      expect(keys).toContain('matrix.1.1');
-      expect(keys).toContain('matrix.1.2');
-      expect(keys).toContain('matrix.2.0');
-      expect(keys).toContain('matrix.2.1');
-      expect(keys).toContain('matrix.2.2');
+      expect(keys).toContain('matrix[0][0]');
+      expect(keys).toContain('matrix[0][1]');
+      expect(keys).toContain('matrix[0][2]');
+      expect(keys).toContain('matrix[1][0]');
+      expect(keys).toContain('matrix[1][1]');
+      expect(keys).toContain('matrix[1][2]');
+      expect(keys).toContain('matrix[2][0]');
+      expect(keys).toContain('matrix[2][1]');
+      expect(keys).toContain('matrix[2][2]');
     });
   });
 
@@ -66,19 +66,19 @@ describe('Translation Utils - Array Handling', () => {
         ],
       };
 
-      expect(getNestedValue(obj, 'items.0')).toBe('apple');
-      expect(getNestedValue(obj, 'items.1')).toBe('banana');
-      expect(getNestedValue(obj, 'items.2')).toBe('cherry');
-      expect(getNestedValue(obj, 'matrix.0.0')).toBe(1);
-      expect(getNestedValue(obj, 'matrix.1.1')).toBe(4);
+      expect(getNestedValue(obj, 'items[0]')).toBe('apple');
+      expect(getNestedValue(obj, 'items[1]')).toBe('banana');
+      expect(getNestedValue(obj, 'items[2]')).toBe('cherry');
+      expect(getNestedValue(obj, 'matrix[0][0]')).toBe(1);
+      expect(getNestedValue(obj, 'matrix[1][1]')).toBe(4);
     });
 
     test('should handle out-of-bounds array access', () => {
       const obj = { items: ['a', 'b', 'c'] };
 
-      expect(getNestedValue(obj, 'items.3')).toBeUndefined();
-      expect(getNestedValue(obj, 'items.-1')).toBeUndefined();
-      expect(getNestedValue(obj, 'items.999')).toBeUndefined();
+      expect(getNestedValue(obj, 'items[3]')).toBeUndefined();
+      expect(getNestedValue(obj, 'items[-1]')).toBeUndefined();
+      expect(getNestedValue(obj, 'items[999]')).toBeUndefined();
     });
   });
 
@@ -86,7 +86,7 @@ describe('Translation Utils - Array Handling', () => {
     test('should create arrays when setting array indices', () => {
       const obj = {};
 
-      setNestedValue(obj, 'items.0', 'first');
+      setNestedValue(obj, 'items[0]', 'first');
       expect(Array.isArray(obj.items)).toBe(true);
       expect(obj.items[0]).toBe('first');
       expect(obj.items).toHaveLength(1);
@@ -95,7 +95,7 @@ describe('Translation Utils - Array Handling', () => {
     test('should extend existing arrays', () => {
       const obj = { items: ['existing'] };
 
-      setNestedValue(obj, 'items.1', 'second');
+      setNestedValue(obj, 'items[1]', 'second');
       expect(obj.items).toHaveLength(2);
       expect(obj.items[0]).toBe('existing');
       expect(obj.items[1]).toBe('second');
@@ -104,7 +104,7 @@ describe('Translation Utils - Array Handling', () => {
     test('should handle deep array creation', () => {
       const obj = {};
 
-      setNestedValue(obj, 'deep.nested.array.5', 'value');
+      setNestedValue(obj, 'deep.nested.array[5]', 'value');
       expect(Array.isArray(obj.deep.nested.array)).toBe(true);
       expect(obj.deep.nested.array[5]).toBe('value');
       expect(obj.deep.nested.array).toHaveLength(6);
@@ -122,8 +122,8 @@ describe('Translation Utils - Array Handling', () => {
       };
 
       const missingKeys = getMissingKeys(template, target);
-      expect(missingKeys).toContain('items.1');
-      expect(missingKeys).toContain('items.2');
+      expect(missingKeys).toContain('items[1]');
+      expect(missingKeys).toContain('items[2]');
     });
 
     test('should handle arrays with different lengths', () => {
@@ -136,8 +136,8 @@ describe('Translation Utils - Array Handling', () => {
       };
 
       const missingKeys = getMissingKeys(template, target);
-      expect(missingKeys).toContain('navigation.2');
-      expect(missingKeys).toContain('navigation.3');
+      expect(missingKeys).toContain('navigation[2]');
+      expect(missingKeys).toContain('navigation[3]');
     });
 
     test('should detect missing nested array elements', () => {
@@ -165,9 +165,9 @@ describe('Translation Utils - Array Handling', () => {
       };
 
       const missingKeys = getMissingKeys(template, target);
-      expect(missingKeys).toContain('sections.0.items.1');
-      expect(missingKeys).toContain('sections.1.title');
-      expect(missingKeys).toContain('sections.1.items.0');
+      expect(missingKeys).toContain('sections[0].items[1]');
+      expect(missingKeys).toContain('sections[1].title');
+      expect(missingKeys).toContain('sections[1].items[0]');
     });
   });
 
@@ -190,8 +190,8 @@ describe('Translation Utils - Array Handling', () => {
       };
 
       const keys = getAllKeys(template);
-      expect(keys).toContain('pages.0.sections.0.components.0.data.0.key');
-      expect(keys).toContain('pages.0.sections.0.components.0.data.1.key');
+      expect(keys).toContain('pages[0].sections[0].components[0].data[0].key');
+      expect(keys).toContain('pages[0].sections[0].components[0].data[1].key');
     });
 
     test('should handle array insertion in complex structures', () => {
@@ -200,17 +200,17 @@ describe('Translation Utils - Array Handling', () => {
       // Build complex nested structure with arrays
       setNestedValue(
         obj,
-        'pages.0.sections.0.components.0.data.0.key',
+        'pages[0].sections[0].components[0].data[0].key',
         'value1'
       );
       setNestedValue(
         obj,
-        'pages.0.sections.0.components.0.data.1.key',
+        'pages[0].sections[0].components[0].data[1].key',
         'value2'
       );
       setNestedValue(
         obj,
-        'pages.0.sections.1.components.0.title',
+        'pages[0].sections[1].components[0].title',
         'Section Title'
       );
 
@@ -233,12 +233,12 @@ describe('Translation Utils - Array Handling', () => {
       const target = {};
 
       // Insert translations
-      setNestedValue(target, 'navigation.0.label', 'Inicio');
-      setNestedValue(target, 'navigation.0.url', '/home');
-      setNestedValue(target, 'navigation.1.label', 'Acerca de');
-      setNestedValue(target, 'navigation.1.url', '/about');
-      setNestedValue(target, 'navigation.2.label', 'Contacto');
-      setNestedValue(target, 'navigation.2.url', '/contact');
+      setNestedValue(target, 'navigation[0].label', 'Inicio');
+      setNestedValue(target, 'navigation[0].url', '/home');
+      setNestedValue(target, 'navigation[1].label', 'Acerca de');
+      setNestedValue(target, 'navigation[1].url', '/about');
+      setNestedValue(target, 'navigation[2].label', 'Contacto');
+      setNestedValue(target, 'navigation[2].url', '/contact');
 
       // Verify structure
       expect(target.navigation[0].label).toBe('Inicio');

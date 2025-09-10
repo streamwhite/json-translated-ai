@@ -24,17 +24,30 @@ export function initializeAIClient(model = DEFAULT_MODEL_NAME) {
     return clients[provider];
   }
 
+  // All models now require OpenRouter key and proxy URL
+  const apiKey = process.env.PROVIDER_KEY;
+  const proxyUrl = process.env.PROVIDER_PROXY_URL;
+
+  if (!apiKey) {
+    throw new Error(
+      'PROVIDER_KEY is required for all models. Please set your OpenRouter API key.'
+    );
+  }
+
+  if (!proxyUrl) {
+    throw new Error(
+      'PROVIDER_PROXY_URL is required for all models. Please set your OpenRouter proxy URL.'
+    );
+  }
+
   try {
     let client;
 
     switch (provider) {
       case 'openai':
         client = new OpenAI({
-          apiKey: process.env.PROVIDER_KEY || process.env.OPENAI_API_KEY,
-          baseURL:
-            process.env.PROVIDER_PROXY_URL ||
-            process.env.OPENAI_BASE_URL ||
-            providerConfig.defaultUrl,
+          apiKey: apiKey,
+          baseURL: proxyUrl,
           defaultHeaders: {
             'HTTP-Referer': 'jta',
             'X-Title': 'jta',
@@ -44,18 +57,13 @@ export function initializeAIClient(model = DEFAULT_MODEL_NAME) {
 
       case 'anthropic':
         client = new Anthropic({
-          apiKey: process.env.PROVIDER_KEY || process.env.OPENAI_API_KEY,
-          baseURL:
-            process.env.PROVIDER_PROXY_URL ||
-            process.env.OPENAI_BASE_URL ||
-            providerConfig.defaultUrl,
+          apiKey: apiKey,
+          baseURL: proxyUrl,
         });
         break;
 
       case 'google':
-        client = new GoogleGenerativeAI(
-          process.env.PROVIDER_KEY || process.env.OPENAI_API_KEY
-        );
+        client = new GoogleGenerativeAI(apiKey);
         break;
 
       default:
@@ -77,7 +85,7 @@ export async function checkAIHealth(model = DEFAULT_MODEL_NAME) {
   const client = initializeAIClient(model);
   if (!client) {
     throw new Error(
-      'AI client not initialized - check PROVIDER_KEY or OPENAI_API_KEY'
+      'AI client not initialized - check PROVIDER_KEY and PROVIDER_PROXY_URL'
     );
   }
 

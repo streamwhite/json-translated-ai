@@ -175,25 +175,25 @@ describe('Extended Translation Insertion Tests', () => {
       const keys = getAllKeys(complexTemplate);
 
       // Verify all expected keys are present
-      expect(keys).toContain('page.sections.0.type');
-      expect(keys).toContain('page.sections.0.content.title');
-      expect(keys).toContain('page.sections.0.content.subtitle');
-      expect(keys).toContain('page.sections.0.content.buttons.0');
-      expect(keys).toContain('page.sections.0.content.buttons.1');
-      expect(keys).toContain('page.sections.0.content.buttons.2');
-      expect(keys).toContain('page.sections.1.type');
-      expect(keys).toContain('page.sections.1.items.0.title');
-      expect(keys).toContain('page.sections.1.items.0.description');
-      expect(keys).toContain('page.sections.1.items.0.tags.0');
-      expect(keys).toContain('page.sections.1.items.0.tags.1');
-      expect(keys).toContain('page.sections.1.items.1.title');
-      expect(keys).toContain('page.sections.1.items.1.description');
-      expect(keys).toContain('page.sections.1.items.1.tags.0');
+      expect(keys).toContain('page.sections[0].type');
+      expect(keys).toContain('page.sections[0].content.title');
+      expect(keys).toContain('page.sections[0].content.subtitle');
+      expect(keys).toContain('page.sections[0].content.buttons[0]');
+      expect(keys).toContain('page.sections[0].content.buttons[1]');
+      expect(keys).toContain('page.sections[0].content.buttons[2]');
+      expect(keys).toContain('page.sections[1].type');
+      expect(keys).toContain('page.sections[1].items[0].title');
+      expect(keys).toContain('page.sections[1].items[0].description');
+      expect(keys).toContain('page.sections[1].items[0].tags[0]');
+      expect(keys).toContain('page.sections[1].items[0].tags[1]');
+      expect(keys).toContain('page.sections[1].items[1].title');
+      expect(keys).toContain('page.sections[1].items[1].description');
+      expect(keys).toContain('page.sections[1].items[1].tags[0]');
       expect(keys).toContain('page.metadata.title');
       expect(keys).toContain('page.metadata.description');
-      expect(keys).toContain('page.metadata.keywords.0');
-      expect(keys).toContain('page.metadata.keywords.1');
-      expect(keys).toContain('page.metadata.keywords.2');
+      expect(keys).toContain('page.metadata.keywords[0]');
+      expect(keys).toContain('page.metadata.keywords[1]');
+      expect(keys).toContain('page.metadata.keywords[2]');
 
       expect(keys).toHaveLength(19);
     });
@@ -217,21 +217,25 @@ describe('Extended Translation Insertion Tests', () => {
       const targetLang = {};
 
       // Insert translations
-      setNestedValue(targetLang, 'page.sections.0.type', 'hero');
-      setNestedValue(targetLang, 'page.sections.0.content.title', 'Bienvenido');
+      setNestedValue(targetLang, 'page.sections[0].type', 'hero');
       setNestedValue(
         targetLang,
-        'page.sections.0.content.subtitle',
+        'page.sections[0].content.title',
+        'Bienvenido'
+      );
+      setNestedValue(
+        targetLang,
+        'page.sections[0].content.subtitle',
         'Comienza hoy'
       );
       setNestedValue(
         targetLang,
-        'page.sections.0.content.buttons.0',
+        'page.sections[0].content.buttons[0]',
         'Aprende Más'
       );
       setNestedValue(
         targetLang,
-        'page.sections.0.content.buttons.1',
+        'page.sections[0].content.buttons[1]',
         'Regístrate'
       );
 
@@ -274,13 +278,13 @@ describe('Extended Translation Insertion Tests', () => {
 
       const keys = getAllKeys(mixedArrayTemplate);
 
-      expect(keys).toContain('content.0');
-      expect(keys).toContain('content.1.title');
-      expect(keys).toContain('content.1.description');
-      expect(keys).toContain('content.2.0');
-      expect(keys).toContain('content.2.1');
-      expect(keys).toContain('content.3');
-      expect(keys).toContain('content.4');
+      expect(keys).toContain('content[0]');
+      expect(keys).toContain('content[1].title');
+      expect(keys).toContain('content[1].description');
+      expect(keys).toContain('content[2][0]');
+      expect(keys).toContain('content[2][1]');
+      expect(keys).toContain('content[3]');
+      expect(keys).toContain('content[4]');
     });
 
     test('should handle sparse arrays correctly', () => {
@@ -291,8 +295,8 @@ describe('Extended Translation Insertion Tests', () => {
       const template = { items: sparseArray };
       const keys = getAllKeys(template);
 
-      expect(keys).toContain('items.0');
-      expect(keys).toContain('items.5');
+      expect(keys).toContain('items[0]');
+      expect(keys).toContain('items[5]');
       expect(keys).toHaveLength(6);
     });
   });
@@ -311,9 +315,9 @@ describe('Extended Translation Insertion Tests', () => {
       expect(keys).toContain('title');
       expect(keys).toContain('description');
       expect(keys).toContain('content');
-      expect(keys).toContain('items.0');
-      expect(keys).toContain('items.1');
-      expect(keys).toContain('items.2');
+      expect(keys).toContain('items[0]');
+      expect(keys).toContain('items[1]');
+      expect(keys).toContain('items[2]');
     });
 
     test('should handle circular references gracefully', () => {
@@ -352,49 +356,50 @@ describe('Extended Translation Insertion Tests', () => {
         'hero.secondaryCta': 'Aprende Más',
 
         // Services
-        'services.frontend.features.0': 'Diseño Responsivo',
-        'services.frontend.features.1': 'Optimización de Rendimiento',
-        'services.frontend.features.2': 'SEO Amigable',
+        'services.frontend.features[0]': 'Diseño Responsivo',
+        'services.frontend.features[1]': 'Optimización de Rendimiento',
+        'services.frontend.features[2]': 'SEO Amigable',
         'services.backend.title': 'Desarrollo Backend',
         'services.backend.description': 'Desarrollo de API escalable',
-        'services.backend.features.0': 'APIs REST',
-        'services.backend.features.1': 'Diseño de Base de Datos',
-        'services.backend.features.2': 'Seguridad',
+        'services.backend.features[0]': 'APIs REST',
+        'services.backend.features[1]': 'Diseño de Base de Datos',
+        'services.backend.features[2]': 'Seguridad',
         'services.ai.title': 'Integración de IA',
         'services.ai.description': 'Soluciones de machine learning e IA',
-        'services.ai.features.0': 'Chatbots',
-        'services.ai.features.1': 'Análisis de Datos',
-        'services.ai.features.2': 'Automatización',
+        'services.ai.features[0]': 'Chatbots',
+        'services.ai.features[1]': 'Análisis de Datos',
+        'services.ai.features[2]': 'Automatización',
 
         // Footer
         'footer.copyright': '© 2024 Todos los derechos reservados',
-        'footer.links.0': 'Política de Privacidad',
-        'footer.links.1': 'Términos de Servicio',
-        'footer.links.2': 'Contáctanos',
+        'footer.links[0]': 'Política de Privacidad',
+        'footer.links[1]': 'Términos de Servicio',
+        'footer.links[2]': 'Contáctanos',
         'footer.social.twitter': 'Síguenos en Twitter',
         'footer.social.linkedin': 'Conéctate en LinkedIn',
         'footer.social.github': 'Ve nuestro código',
 
         // Structured Data
-        'structuredData.metrics.0.label': 'Proyectos Completados',
-        'structuredData.metrics.0.value': '100+',
-        'structuredData.metrics.0.description': 'Proyectos exitosos entregados',
-        'structuredData.metrics.1.label': 'Clientes Satisfechos',
-        'structuredData.metrics.1.value': '50+',
-        'structuredData.metrics.1.description':
+        'structuredData.metrics[0].label': 'Proyectos Completados',
+        'structuredData.metrics[0].value': '100+',
+        'structuredData.metrics[0].description':
+          'Proyectos exitosos entregados',
+        'structuredData.metrics[1].label': 'Clientes Satisfechos',
+        'structuredData.metrics[1].value': '50+',
+        'structuredData.metrics[1].description':
           'Clientes satisfechos en todo el mundo',
-        'structuredData.metrics.2.label': 'Años de Experiencia',
-        'structuredData.metrics.2.value': '5+',
-        'structuredData.metrics.2.description': 'Experiencia profesional',
-        'structuredData.testimonials.0.name': 'Juan Pérez',
-        'structuredData.testimonials.0.role': 'CEO',
-        'structuredData.testimonials.0.company': 'Tech Corp',
-        'structuredData.testimonials.0.text':
+        'structuredData.metrics[2].label': 'Años de Experiencia',
+        'structuredData.metrics[2].value': '5+',
+        'structuredData.metrics[2].description': 'Experiencia profesional',
+        'structuredData.testimonials[0].name': 'Juan Pérez',
+        'structuredData.testimonials[0].role': 'CEO',
+        'structuredData.testimonials[0].company': 'Tech Corp',
+        'structuredData.testimonials[0].text':
           'Trabajo increíble y gran comunicación',
-        'structuredData.testimonials.1.name': 'María García',
-        'structuredData.testimonials.1.role': 'CTO',
-        'structuredData.testimonials.1.company': 'Startup Inc',
-        'structuredData.testimonials.1.text': 'Superó nuestras expectativas',
+        'structuredData.testimonials[1].name': 'María García',
+        'structuredData.testimonials[1].role': 'CTO',
+        'structuredData.testimonials[1].company': 'Startup Inc',
+        'structuredData.testimonials[1].text': 'Superó nuestras expectativas',
 
         // Forms
         'forms.contact.title': 'Ponte en Contacto',

@@ -5,8 +5,9 @@ import {
   updateTokenUsage,
 } from './cache-manager.js';
 import { API_CONFIG } from './config.js';
-import { getContextPrompt, validateLanguageCode } from './language-utils.js';
+import { validateLanguageCode } from './language-utils.js';
 import { retryWithBackoff } from './retry-utils.js';
+import { createSystemPrompt } from './system-message-utils.js';
 import { translationFailureReporter } from './translation-failure-reporter.js';
 
 export async function translateText(
@@ -14,7 +15,6 @@ export async function translateText(
   targetLanguage,
   key,
   retryCount = 0,
-  purposeContext,
   model
 ) {
   if (typeof text !== 'string' && !Array.isArray(text)) {
@@ -22,14 +22,7 @@ export async function translateText(
   }
 
   if (Array.isArray(text)) {
-    return await translateArray(
-      text,
-      targetLanguage,
-      key,
-      retryCount,
-      purposeContext,
-      model
-    );
+    return await translateArray(text, targetLanguage, key, retryCount, model);
   }
 
   const sanitizedText = sanitizeText(text);
@@ -54,7 +47,7 @@ export async function translateText(
 
     console.log(`  🤖 Translating: "${text}"`);
 
-    const prompt = getContextPrompt(key, targetLanguage);
+    const prompt = `Translate this text to ${targetLanguage}. Keep it natural and appropriate for the context.`;
     const validatedLanguage = validateLanguageCode(targetLanguage);
 
     const completion = await client.chat.completions.create(
@@ -66,7 +59,7 @@ export async function translateText(
             content: createSystemPrompt(
               validatedLanguage,
               targetLanguage,
-              purposeContext
+              false // isBatch = false for individual translation
             ),
           },
           {
@@ -97,7 +90,6 @@ export async function translateText(
       targetLanguage,
       key,
       retryCount,
-      purposeContext,
       model
     );
   }
@@ -108,7 +100,6 @@ async function translateArray(
   targetLanguage,
   key,
   retryCount,
-  purposeContext,
   model
 ) {
   const translatedArray = [];
@@ -122,7 +113,6 @@ async function translateArray(
           targetLanguage,
           elementKey,
           retryCount,
-          purposeContext,
           model
         )
       );
@@ -137,33 +127,7 @@ function sanitizeText(text) {
   return text.replace(/"/g, '\\"').replace(/\n/g, '\\n');
 }
 
-function createSystemPrompt(validatedLanguage, targetLanguage, purposeContext) {
-  const customSystemMessage = process.env.CUSTOM_SYSTEM_MESSAGE;
-
-  if (customSystemMessage) {
-    return `You are a professional translator. ${customSystemMessage}
-
-Translate the given text to ${validatedLanguage || targetLanguage}.
-
-Important guidelines:
-- Keep technical terms in English when appropriate (React, Next.js, TypeScript, etc.)
-- Preserve any HTML tags or placeholders like {variable}
-- Keep the translation natural and fluent
-- This translation will be used in a ${purposeContext}, so maintain appropriate tone and style for ${purposeContext} content
-- Return only the translated text, no explanations`;
-  }
-
-  return `You are a professional translator. Translate the given text to ${
-    validatedLanguage || targetLanguage
-  }.
-
-Important guidelines:
-- Keep technical terms in English when appropriate (React, Next.js, TypeScript, etc.)
-- Preserve any HTML tags or placeholders like {variable}
-- Keep the translation natural and fluent
-- This translation will be used in a ${purposeContext}, so maintain appropriate tone and style for ${purposeContext} content
-- Return only the translated text, no explanations`;
-}
+// System prompt creation is now handled by the centralized utility
 
 function validateAndCleanResponse(completion) {
   if (!completion?.choices?.[0]?.message?.content) {
@@ -190,7 +154,6 @@ async function handleTranslationError(
   targetLanguage,
   key,
   retryCount,
-  purposeContext,
   model
 ) {
   console.log(`  ❌ Translation error for "${text}":`, error.message);
@@ -204,7 +167,6 @@ async function handleTranslationError(
         text,
         targetLanguage,
         key,
-        purposeContext,
         model
       );
     } catch (retryError) {
@@ -222,7 +184,6 @@ async function handleTranslationError(
       targetLanguage,
       key,
       retryCount,
-      purposeContext,
       model
     );
   }
@@ -233,7 +194,6 @@ async function handleTranslationError(
       targetLanguage,
       key,
       retryCount,
-      purposeContext,
       model
     );
   }
@@ -258,21 +218,13 @@ async function handleRateLimitRetry(
   targetLanguage,
   key,
   retryCount,
-  purposeContext,
   model
 ) {
   const backoffDelay =
     Math.pow(API_CONFIG.BACKOFF_MULTIPLIER, retryCount) * 1000;
   console.log(`  ⏳ Rate limited, retrying in ${backoffDelay}ms...`);
   await new Promise((resolve) => setTimeout(resolve, backoffDelay));
-  return translateText(
-    text,
-    targetLanguage,
-    key,
-    retryCount + 1,
-    purposeContext,
-    model
-  );
+  return translateText(text, targetLanguage, key, retryCount + 1, model);
 }
 
 async function handleTimeoutRetry(
@@ -280,16 +232,8 @@ async function handleTimeoutRetry(
   targetLanguage,
   key,
   retryCount,
-  purposeContext,
   model
 ) {
   console.log(`  ⏳ Request timeout, retrying...`);
-  return translateText(
-    text,
-    targetLanguage,
-    key,
-    retryCount + 1,
-    purposeContext,
-    model
-  );
+  return translateText(text, targetLanguage, key, retryCount + 1, model);
 }

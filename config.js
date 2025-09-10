@@ -1,91 +1,56 @@
 // AI model configuration
 export const SUPPORTED_MODELS = {
   // OpenAI Models
-  'gpt-4.1': {
-    provider: 'openai',
-    name: 'GPT-4.1',
-    description: 'Latest GPT-4 model with improved performance',
-    cost: 'medium',
-    recommended: true,
-  },
-  'gpt-4o': {
+  'openai/gpt-4o': {
     provider: 'openai',
     name: 'GPT-4o',
     description: 'Fast and efficient GPT-4 model',
     cost: 'medium',
     recommended: false,
   },
-  'gpt-4o-mini': {
+  'openai/gpt-4o-mini': {
     provider: 'openai',
     name: 'GPT-4o Mini',
     description: 'Cost-effective GPT-4 model',
     cost: 'low',
     recommended: true,
   },
-  'gpt-3.5-turbo': {
+  'openai/gpt-4.1': {
     provider: 'openai',
-    name: 'GPT-3.5 Turbo',
-    description: 'Fast and cost-effective model',
-    cost: 'low',
-    recommended: false,
+    name: 'GPT-4.1',
+    description: 'Latest GPT-4 model with improved performance',
+    cost: 'medium',
+    recommended: true,
   },
 
   // Anthropic Models
-  'claude-3-5-sonnet-20241022': {
+  'anthropic/claude-3.5-sonnet': {
     provider: 'anthropic',
     name: 'Claude 3.5 Sonnet',
     description: 'Latest Claude model with excellent performance',
     cost: 'medium',
     recommended: true,
   },
-  'claude-3-haiku-20240307': {
+  'anthropic/claude-3-haiku': {
     provider: 'anthropic',
     name: 'Claude 3 Haiku',
     description: 'Fast and cost-effective Claude model',
     cost: 'low',
     recommended: true,
   },
-  'claude-3-opus-20240229': {
-    provider: 'anthropic',
-    name: 'Claude 3 Opus',
-    description: 'Most capable Claude model',
-    cost: 'high',
-    recommended: false,
-  },
 
   // Google Models
-  'gemini-2.5-flash': {
+  'google/gemini-2.5-flash': {
     provider: 'google',
     name: 'Gemini 2.5 Flash',
     description: 'Fast and efficient Gemini model',
     cost: 'low',
     recommended: true,
   },
-  'gemini-2.0-flash-exp': {
-    provider: 'google',
-    name: 'Gemini 2.0 Flash',
-    description: 'Fast and efficient Gemini model',
-    cost: 'low',
-    recommended: false,
-  },
-  'gemini-1.5-flash': {
-    provider: 'google',
-    name: 'Gemini 1.5 Flash',
-    description: 'Balanced Gemini model',
-    cost: 'low',
-    recommended: false,
-  },
-  'gemini-1.5-pro': {
-    provider: 'google',
-    name: 'Gemini 1.5 Pro',
-    description: 'Capable Gemini model',
-    cost: 'medium',
-    recommended: false,
-  },
 };
 
 // Default model configuration
-const DEFAULT_MODEL = 'gpt-4o-mini';
+const DEFAULT_MODEL = 'openai/gpt-4o-mini';
 export const DEFAULT_MODEL_NAME = DEFAULT_MODEL;
 
 // Provider configuration

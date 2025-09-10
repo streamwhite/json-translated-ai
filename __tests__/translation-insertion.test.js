@@ -149,10 +149,10 @@ describe('Translation Insertion Functions', () => {
 
       const keys = getAllKeys(objWithArrays);
       expect(keys).toEqual([
-        'items.0.name',
-        'items.0.value',
-        'items.1.name',
-        'items.1.value',
+        'items[0].name',
+        'items[0].value',
+        'items[1].name',
+        'items[1].value',
         'simple',
       ]);
     });
@@ -172,12 +172,12 @@ describe('Translation Insertion Functions', () => {
       expect(keys).toContain('services.backend.title');
       expect(keys).toContain('services.backend.description');
       expect(keys).toContain('footer.copyright');
-      expect(keys).toContain('footer.links.0');
-      expect(keys).toContain('footer.links.1');
-      expect(keys).toContain('structuredData.metrics.0.label');
-      expect(keys).toContain('structuredData.metrics.0.value');
-      expect(keys).toContain('structuredData.metrics.1.label');
-      expect(keys).toContain('structuredData.metrics.1.value');
+      expect(keys).toContain('footer.links[0]');
+      expect(keys).toContain('footer.links[1]');
+      expect(keys).toContain('structuredData.metrics[0].label');
+      expect(keys).toContain('structuredData.metrics[0].value');
+      expect(keys).toContain('structuredData.metrics[1].label');
+      expect(keys).toContain('structuredData.metrics[1].value');
 
       expect(keys).toHaveLength(18);
     });
@@ -198,7 +198,7 @@ describe('Translation Insertion Functions', () => {
     });
 
     test('should get array element value', () => {
-      const value = getNestedValue(mockEnglishTemplate, 'footer.links.0');
+      const value = getNestedValue(mockEnglishTemplate, 'footer.links[0]');
       expect(value).toBe('Privacy Policy');
     });
 
@@ -241,7 +241,7 @@ describe('Translation Insertion Functions', () => {
 
     test('should set array element value', () => {
       const obj = {};
-      setNestedValue(obj, 'footer.links.0', 'Política de Privacidad');
+      setNestedValue(obj, 'footer.links[0]', 'Política de Privacidad');
 
       expect(obj.footer.links[0]).toBe('Política de Privacidad');
     });
@@ -250,7 +250,7 @@ describe('Translation Insertion Functions', () => {
       const obj = {};
       setNestedValue(
         obj,
-        'structuredData.metrics.0.label',
+        'structuredData.metrics[0].label',
         'Proyectos Completados'
       );
 
@@ -273,8 +273,8 @@ describe('Translation Insertion Functions', () => {
 
     test('should handle multiple array elements', () => {
       const obj = {};
-      setNestedValue(obj, 'items.0.name', 'Item 1');
-      setNestedValue(obj, 'items.1.name', 'Item 2');
+      setNestedValue(obj, 'items[0].name', 'Item 1');
+      setNestedValue(obj, 'items[1].name', 'Item 2');
 
       expect(obj.items[0].name).toBe('Item 1');
       expect(obj.items[1].name).toBe('Item 2');
@@ -294,7 +294,7 @@ describe('Translation Insertion Functions', () => {
     });
 
     test('should return true for existing array key', () => {
-      expect(keyExists(mockEnglishTemplate, 'footer.links.0')).toBe(true);
+      expect(keyExists(mockEnglishTemplate, 'footer.links[0]')).toBe(true);
     });
 
     test('should return false for non-existent key', () => {
@@ -322,12 +322,12 @@ describe('Translation Insertion Functions', () => {
       expect(missingKeys).toContain('services.backend.title');
       expect(missingKeys).toContain('services.backend.description');
       expect(missingKeys).toContain('footer.copyright');
-      expect(missingKeys).toContain('footer.links.0');
-      expect(missingKeys).toContain('footer.links.1');
-      expect(missingKeys).toContain('structuredData.metrics.0.label');
-      expect(missingKeys).toContain('structuredData.metrics.0.value');
-      expect(missingKeys).toContain('structuredData.metrics.1.label');
-      expect(missingKeys).toContain('structuredData.metrics.1.value');
+      expect(missingKeys).toContain('footer.links[0]');
+      expect(missingKeys).toContain('footer.links[1]');
+      expect(missingKeys).toContain('structuredData.metrics[0].label');
+      expect(missingKeys).toContain('structuredData.metrics[0].value');
+      expect(missingKeys).toContain('structuredData.metrics[1].label');
+      expect(missingKeys).toContain('structuredData.metrics[1].value');
 
       expect(missingKeys).toHaveLength(11);
     });
@@ -390,12 +390,12 @@ describe('Translation Insertion Functions', () => {
         'services.backend.title': 'Desarrollo Backend',
         'services.backend.description': 'Desarrollo de API escalable',
         'footer.copyright': '© 2024 Todos los derechos reservados',
-        'footer.links.0': 'Política de Privacidad',
-        'footer.links.1': 'Términos de Servicio',
-        'structuredData.metrics.0.label': 'Proyectos Completados',
-        'structuredData.metrics.0.value': '100+',
-        'structuredData.metrics.1.label': 'Clientes Satisfechos',
-        'structuredData.metrics.1.value': '50+',
+        'footer.links[0]': 'Política de Privacidad',
+        'footer.links[1]': 'Términos de Servicio',
+        'structuredData.metrics[0].label': 'Proyectos Completados',
+        'structuredData.metrics[0].value': '100+',
+        'structuredData.metrics[1].label': 'Clientes Satisfechos',
+        'structuredData.metrics[1].value': '50+',
       };
 
       // Insert each missing translation
@@ -427,8 +427,8 @@ describe('Translation Insertion Functions', () => {
       const targetLang = {};
 
       // Insert array elements
-      setNestedValue(targetLang, 'footer.links.0', 'Privacy Policy');
-      setNestedValue(targetLang, 'footer.links.1', 'Terms of Service');
+      setNestedValue(targetLang, 'footer.links[0]', 'Privacy Policy');
+      setNestedValue(targetLang, 'footer.links[1]', 'Terms of Service');
 
       expect(targetLang.footer.links).toHaveLength(2);
       expect(targetLang.footer.links[0]).toBe('Privacy Policy');
@@ -441,16 +441,16 @@ describe('Translation Insertion Functions', () => {
       // Insert nested array elements
       setNestedValue(
         targetLang,
-        'structuredData.metrics.0.label',
+        'structuredData.metrics[0].label',
         'Projects Completed'
       );
-      setNestedValue(targetLang, 'structuredData.metrics.0.value', '100+');
+      setNestedValue(targetLang, 'structuredData.metrics[0].value', '100+');
       setNestedValue(
         targetLang,
         'structuredData.metrics.1.label',
         'Happy Clients'
       );
-      setNestedValue(targetLang, 'structuredData.metrics.1.value', '50+');
+      setNestedValue(targetLang, 'structuredData.metrics[1].value', '50+');
 
       expect(targetLang.structuredData.metrics).toHaveLength(2);
       expect(targetLang.structuredData.metrics[0].label).toBe(
@@ -512,16 +512,16 @@ describe('Translation Insertion Functions', () => {
 
       const keys = getAllKeys(complexTemplate);
 
-      expect(keys).toContain('page.sections.0.type');
-      expect(keys).toContain('page.sections.0.content.title');
-      expect(keys).toContain('page.sections.0.content.subtitle');
-      expect(keys).toContain('page.sections.0.content.buttons.0');
-      expect(keys).toContain('page.sections.0.content.buttons.1');
-      expect(keys).toContain('page.sections.1.type');
-      expect(keys).toContain('page.sections.1.items.0.title');
-      expect(keys).toContain('page.sections.1.items.0.description');
-      expect(keys).toContain('page.sections.1.items.1.title');
-      expect(keys).toContain('page.sections.1.items.1.description');
+      expect(keys).toContain('page.sections[0].type');
+      expect(keys).toContain('page.sections[0].content.title');
+      expect(keys).toContain('page.sections[0].content.subtitle');
+      expect(keys).toContain('page.sections[0].content.buttons[0]');
+      expect(keys).toContain('page.sections[0].content.buttons[1]');
+      expect(keys).toContain('page.sections[1].type');
+      expect(keys).toContain('page.sections[1].items[0].title');
+      expect(keys).toContain('page.sections[1].items[0].description');
+      expect(keys).toContain('page.sections[1].items[1].title');
+      expect(keys).toContain('page.sections[1].items[1].description');
       expect(keys).toContain('page.metadata.title');
       expect(keys).toContain('page.metadata.description');
     });
@@ -545,21 +545,25 @@ describe('Translation Insertion Functions', () => {
       const targetLang = {};
 
       // Insert translations
-      setNestedValue(targetLang, 'page.sections.0.type', 'hero');
-      setNestedValue(targetLang, 'page.sections.0.content.title', 'Bienvenido');
+      setNestedValue(targetLang, 'page.sections[0].type', 'hero');
       setNestedValue(
         targetLang,
-        'page.sections.0.content.subtitle',
+        'page.sections[0].content.title',
+        'Bienvenido'
+      );
+      setNestedValue(
+        targetLang,
+        'page.sections[0].content.subtitle',
         'Comienza hoy'
       );
       setNestedValue(
         targetLang,
-        'page.sections.0.content.buttons.0',
+        'page.sections[0].content.buttons[0]',
         'Aprende Más'
       );
       setNestedValue(
         targetLang,
-        'page.sections.0.content.buttons.1',
+        'page.sections[0].content.buttons[1]',
         'Regístrate'
       );
 

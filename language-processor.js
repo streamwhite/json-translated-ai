@@ -164,7 +164,6 @@ async function processBatch(
       englishValues,
       lang,
       batch,
-      'website',
       model
     );
 
@@ -222,7 +221,6 @@ async function processBatchFallback(
         lang,
         key,
         0,
-        'website',
         model
       );
       setNestedValue(targetLang, key, translatedValue);
