@@ -1,6 +1,6 @@
 {
   "name": "json-translated-ai",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "AI-powered translation tool supporting OpenAI GPT, Anthropic Claude, and Google Gemini models",
   "main": "main-app.js",
   "bin": {
