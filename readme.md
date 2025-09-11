@@ -7,7 +7,7 @@ A CLI tool that automatically synchronizes and translates JSON translation files
 ### 🔒 Privacy & Security
 
 - **100% Private**: Your content never stored except communication with AI providers.
-- **Secure API Keys**: Your API keys are only used for translation requests, never stored.
+- **Secure API Keys**: Your API keys are only used for translation requests, never stored. If you still worried, use a specific key and disable it.
 
 ### 💰 Cost-Effective AI Models
 
@@ -48,6 +48,9 @@ PROVIDER_PROXY_URL=https://openrouter.ai/api/v1
 
 # Specify a custom folder, assume en.json in locales folder
 jta --folder ./locales
+
+# Specify a language file, a lang code(two code) in each line
+jta --languages languages.txt
 
 # Use a specific AI model
 jta --model anthropic/claude-3-haiku
@@ -92,7 +95,10 @@ jta -h
 
 # Combine options
 jta --folder ./locales --languages languages.txt --model anthropic/claude-3-haiku --preset FAST --system "E-commerce website translations" --cache /path/to/custom-cache.json
+
 ```
+
+short options is supported.
 
 ## ⚙️ Configuration
 

@@ -6,6 +6,14 @@
   "bin": {
     "jta": "./main-app.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/streamwhite/json-translated-ai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/streamwhite/json-translated-ai/issues"
+  },
+  "homepage": "https://github.com/streamwhite/json-translated-ai#readme",
   "type": "module",
   "scripts": {
     "start": "node main-app.js",
