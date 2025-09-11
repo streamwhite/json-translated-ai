@@ -23,6 +23,27 @@ export function loadCache() {
           Object.keys(translationCache).length
         } entries (${totalTokensUsed} tokens used, ${totalRequests} requests)`
       );
+    } else {
+      // Ensure directory exists and create an empty cache file
+      const dir = path.dirname(CACHE_FILE);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      const initialData = {
+        translations: {},
+        totalTokensUsed: 0,
+        totalRequests: 0,
+        lastUpdated: new Date().toISOString(),
+      };
+      fs.writeFileSync(
+        CACHE_FILE,
+        JSON.stringify(initialData, null, 2),
+        'utf8'
+      );
+      translationCache = {};
+      totalTokensUsed = 0;
+      totalRequests = 0;
+      console.log(`🆕 Created new translation cache at: ${CACHE_FILE}`);
     }
   } catch (error) {
     console.log('⚠️  Could not load translation cache, starting fresh');
