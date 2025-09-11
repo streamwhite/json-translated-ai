@@ -7,9 +7,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export function parseArguments(args = process.argv.slice(2)) {
-  let localesDir = path.join(__dirname, 'locales');
+  // Default to CWD/locales to align with user expectation when running from project root
+  let localesDir = path.join(process.cwd(), 'locales');
   let languageFile = null;
-  let cacheFile = path.join(__dirname, 'translation-cache.json');
+  let cacheFile = path.join(process.cwd(), 'translation-cache.json');
   let performancePreset = null;
   let model = DEFAULT_MODEL_NAME;
   let providerKey = null;

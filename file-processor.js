@@ -117,6 +117,11 @@ export function loadLanguageFile(localesDir, lang) {
 export function saveLanguageFile(localesDir, lang, data) {
   const filePath = path.join(localesDir, `${lang}.json`);
   try {
+    // Ensure locales directory exists before writing
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
     return true;
   } catch (error) {
