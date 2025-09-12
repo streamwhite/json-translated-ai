@@ -4,7 +4,7 @@
   "description": "AI-powered translation tool supporting OpenAI GPT, Anthropic Claude, and Google Gemini models",
   "main": "main-app.js",
   "bin": {
-    "jta": "./main-app.js"
+    "jta": "main-app.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,8 @@
     "test": "node __tests__/test-runner.js",
     "lint": "npm run lint:js",
     "lint:js": "eslint . --ext .js,.mjs",
-    "publish:npm": "npm version patch && npm publish"
+    "publish:npm": "npm version patch && npm publish --registry https://registry.npmjs.org/",
+    "login": "npm login --registry https://registry.npmjs.org/"
   },
   "keywords": [
     "json translation ai",
