@@ -1,0 +1,18 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "about": "Acerca de",
+    "services": "Servicios",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "title": "Bienvenido a Nuestra Plataforma",
+    "subtitle": "La mejor solución para tus necesidades",
+    "cta": "Empezar"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "success": "¡Éxito!"
+  }
+}

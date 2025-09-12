@@ -1,5 +1,11 @@
 # Target languages for translation
-# One language code per line
+# One language code per line (supports both 2-letter and 4-letter codes)
 # Lines starting with # are comments
+# Examples:
+# es (2-letter code for Spanish)
+# en-US (4-letter code for American English)
+# zh-TW (4-letter code for Traditional Chinese - Taiwan)
 
 es
+en-GB
+zh-TW

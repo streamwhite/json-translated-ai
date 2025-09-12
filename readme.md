@@ -19,6 +19,8 @@ A CLI tool that automatically synchronizes and translates JSON translation files
 ### 🚀 Advanced Translation Features
 
 - **Flexible Key Structures**: Full support for both nested and flattened JSON key structures
+- **Multi-Format Language Support**: Supports both 2-letter (ISO 639-1) and 4-letter (ISO 639-1 + ISO 3166-1) language codes
+- **Locale-Specific Translations**: Handle regional variants like `en-US`, `zh-TW`, `es-MX`, `fr-CA` for precise localization
 - **Custom System Messages**: Provide specific context for better translation quality
 - **Parallel Processing**: Multi-language processing with configurable concurrency
 - **Fallback Strategy**: Automatic fallback to individual translations if batch processing fails
@@ -49,7 +51,7 @@ PROVIDER_PROXY_URL=https://openrouter.ai/api/v1
 # Specify a custom folder, assume en.json in locales folder
 jta --folder ./locales
 
-# Specify a language file, a lang code(two code) in each line
+# Specify a language file, language codes (2-letter or 4-letter) in each line
 jta --languages languages.txt
 
 # Use a specific AI model
@@ -125,17 +127,50 @@ The tool provides comprehensive output including:
 ### Notes
 
 - The tool automatically handles arrays with dot notation indexing.
-- current two-language-code file(like en.json) is supported.
+- Supports both 2-letter language codes (like `en.json`) and 4-letter locale codes (like `en-US.json`)
+- Full backward compatibility with existing 2-letter language codes
 
 ### Language-Specific Processing
 
-Each lang code a line for languages.txt
+Each language code on a line for languages.txt. Supports both 2-letter and 4-letter codes:
 
 ```bash
-# Process only specific languages
-echo "es\nfr" > languages.txt
+# Process specific languages (2-letter codes)
+echo "es\nfr\nde" > languages.txt
+
+# Process specific languages (4-letter locale codes)
+echo "en-US\nzh-TW\nes-MX" > languages.txt
+
+# Mix both formats
+echo "es\nen-US\nzh-TW\nfr-CA" > languages.txt
+
 jta --languages languages.txt
 ```
+
+#### Supported Language Code Formats
+
+**2-letter codes (ISO 639-1):**
+
+- `es` - Spanish
+- `fr` - French
+- `de` - German
+- `zh` - Chinese
+- `ja` - Japanese
+
+**4-letter codes (ISO 639-1 + ISO 3166-1):**
+
+- `en-US` - American English
+- `en-GB` - British English
+- `zh-TW` - Traditional Chinese (Taiwan)
+- `zh-CN` - Simplified Chinese (China)
+- `es-MX` - Mexican Spanish
+- `es-ES` - European Spanish
+- `fr-CA` - Canadian French
+- `fr-FR` - French (France)
+- `de-DE` - German (Germany)
+- `de-AT` - Austrian German
+
+The system automatically recognizes the appropriate language name for translation context.
 
 ### Custom System Messages
 
@@ -182,9 +217,16 @@ The system message is prepended to the default translation instructions, allowin
    - Ensure you're using a supported model ID
 
 4. **OpenRouter Connection Issues**
+
    - Verify `PROVIDER_PROXY_URL` is set to `https://openrouter.ai/api/v1`
    - Check network connectivity to OpenRouter endpoint
    - Ensure your OpenRouter API key is valid and has sufficient credits
+
+5. **Language Code Issues**
+   - Use 2-letter codes (e.g., `es`, `fr`) for general language support
+   - Use 4-letter codes (e.g., `en-US`, `zh-TW`) for locale-specific translations
+   - Mix both formats in your `languages.txt` file as needed
+   - Unknown language codes will show a warning but still be processed
 
 ## 🤝 Contributing
 
