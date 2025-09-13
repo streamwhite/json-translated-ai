@@ -1,7 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { DEFAULT_MODEL_NAME, SUPPORTED_MODELS } from './config.js';
+import {
+  DEFAULT_MODEL_NAME,
+  SUPPORTED_MODELS,
+  TEMPLATE_CONFIG,
+} from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,6 +20,7 @@ export function parseArguments(args = process.argv.slice(2)) {
   let providerKey = null;
   let providerProxyUrl = null;
   let systemMessage = null;
+  let templateLanguage = TEMPLATE_CONFIG.DEFAULT_TEMPLATE_LANGUAGE;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -84,6 +89,14 @@ export function parseArguments(args = process.argv.slice(2)) {
         console.error('❌ Error: --system requires a message');
         process.exit(1);
       }
+    } else if (arg === '--template' || arg === '-t') {
+      if (i + 1 < args.length) {
+        templateLanguage = args[i + 1];
+        i++;
+      } else {
+        console.error('❌ Error: --template requires a language code');
+        process.exit(1);
+      }
     } else if (arg === '--help' || arg === '-h') {
       showHelp();
       process.exit(0);
@@ -102,6 +115,7 @@ export function parseArguments(args = process.argv.slice(2)) {
     providerKey,
     providerProxyUrl,
     systemMessage,
+    templateLanguage,
   };
 }
 
@@ -120,6 +134,7 @@ Options:
   -k <key>      API key (overrides env)
   -u <url>      Proxy URL (overrides env)
   -s <message>  Custom system message for translation context
+  -t <lang>     Template language code (2 or 4 letter, default: en)
   -h            Show this help
   -v            Show version
 
@@ -151,6 +166,8 @@ Examples:
   jta -s "E-commerce website translations"  # Custom context
   jta -l languages.txt               # Specific languages
   jta -c /path/to/custom-cache.json  # Custom cache file
+  jta -t es                          # Use Spanish as template language
+  jta -t en-GB                       # Use British English as template
 
 Environment Variables:
   PROVIDER_KEY         OpenRouter API key (required)

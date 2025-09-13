@@ -205,12 +205,14 @@ export function validateLocalesDirectory(localesDir) {
   return true;
 }
 
-export function loadEnglishTemplate(localesDir) {
-  const enJsonPath = path.join(localesDir, 'en.json');
+export function loadEnglishTemplate(localesDir, templateLanguage = 'en') {
+  const templateJsonPath = path.join(localesDir, `${templateLanguage}.json`);
   try {
-    return JSON.parse(fs.readFileSync(enJsonPath, 'utf8'));
+    return JSON.parse(fs.readFileSync(templateJsonPath, 'utf8'));
   } catch (error) {
-    throw new Error(`Failed to load English template: ${error.message}`);
+    throw new Error(
+      `Failed to load ${templateLanguage} template: ${error.message}`
+    );
   }
 }
 
@@ -237,9 +239,12 @@ export function findKeysWithValue(obj, targetValue, prefix = '') {
  * @param {string} localesDir - Base locales directory
  * @returns {Object} Language structures and template structure
  */
-export function loadLanguageStructures(localesDir) {
-  const languageStructures = discoverLanguageStructures(localesDir);
-  const templateStructure = getTemplateStructure(localesDir);
+export function loadLanguageStructures(localesDir, templateLanguage = 'en') {
+  const languageStructures = discoverLanguageStructures(
+    localesDir,
+    templateLanguage
+  );
+  const templateStructure = getTemplateStructure(localesDir, templateLanguage);
 
   return {
     languageStructures,

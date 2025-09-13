@@ -165,6 +165,115 @@ The system will:
 - ✅ Handle both 2-letter and 4-letter language codes
 - ✅ Process multiple files concurrently for better performance
 
+## 🔄 Updated Keys Feature
+
+The tool supports marking keys as updated in template files using `__updated_keys__` arrays. When a key is marked as updated, it will be re-translated in all target language files, even if it already exists.
+
+### Usage
+
+Add `__updated_keys__` arrays to your template objects to mark keys that need re-translation:
+
+```json
+{
+  "hero": {
+    "title": "Welcome to Our Platform",
+    "subtitle": "The best solution for your needs",
+    "cta": "Get Started",
+    "__updated_keys__": ["title"]
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success!",
+    "__updated_keys__": ["error", "success"]
+  }
+}
+```
+
+### Key Benefits
+
+- **Selective Updates**: Only re-translate keys that have been updated
+- **Cost Efficiency**: Avoid re-translating unchanged content
+- **Precise Control**: Mark exactly which keys need updates
+- **Nested Support**: Works with deeply nested object structures
+- **Metadata Ignored**: `__updated_keys__` fields are automatically ignored in missing key detection
+
+### How It Works
+
+1. **Mark Updated Keys**: Add `__updated_keys__` arrays to objects containing updated keys
+2. **Automatic Detection**: The system automatically finds and processes updated keys
+3. **Combined Processing**: Updated keys are combined with missing keys for translation
+4. **Re-translation**: Marked keys are re-translated even if they exist in target files
+
+### Best Practices
+
+- Add `__updated_keys__` only to objects where updates occur
+- Use the same path pattern as regular keys (e.g., `hero.title`)
+- Remove `__updated_keys__` arrays after translation is complete
+- Keep `__updated_keys__` arrays minimal for better performance
+
+## 🌐 Custom Template Language Support
+
+The tool supports using any language as the template language, not just English. This is useful when your primary language is not English or when you want to use a specific regional variant.
+
+### Usage
+
+Specify a custom template language using the `--template` or `-t` option:
+
+```bash
+# Use Spanish as template language
+jta --template es
+
+# Use British English as template
+jta --template en-GB
+
+# Use French (France) as template
+jta --template fr-FR
+
+# Use German as template
+jta --template de
+```
+
+### Supported Template Languages
+
+The tool supports both 2-letter and 4-letter language codes:
+
+- **2-letter codes**: `en`, `es`, `fr`, `de`, `it`, `pt`, `nl`, `ru`, `ja`, `ko`, `zh`, `ar`, etc.
+- **4-letter codes**: `en-US`, `en-GB`, `es-ES`, `es-MX`, `fr-FR`, `fr-CA`, `de-DE`, `de-AT`, etc.
+
+### How It Works
+
+1. **Template Detection**: The system looks for the specified template language in your locales directory
+2. **Variant Support**: If the exact language code isn't found, it looks for variants (e.g., `es` will find `es-ES`, `es-MX`, etc.)
+3. **File Structure**: Works with both single-file and multi-file structures
+4. **Fallback**: If no template language is found, it falls back to English (`en`)
+
+### Examples
+
+```bash
+# Single-file structure with Spanish template
+locales/
+├── es.json          # Template (Spanish)
+├── en.json          # Target language
+└── fr.json          # Target language
+
+jta --template es
+
+# Multi-file structure with French template
+locales/
+├── fr-FR/           # Template (French France)
+│   ├── home.json
+│   └── products.json
+├── en/              # Target language
+│   ├── home.json
+│   └── products.json
+└── de/              # Target language
+    ├── home.json
+    └── products.json
+
+jta --template fr-FR
+```
+
 ## 🤖 Supported AI Models
 
 We select the most Cost-effective or capable models for translation.

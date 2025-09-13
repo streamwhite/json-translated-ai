@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 
 const SUPPORTED_FILE_EXTENSIONS = ['.json'];
-const TEMPLATE_LANGUAGE = 'en';
 
 /**
  * Scans a directory recursively to find all JSON files
@@ -50,9 +49,13 @@ export function scanDirectoryForJsonFiles(dirPath, relativePath = '') {
 /**
  * Discovers language folders and their file structures
  * @param {string} localesDir - Base locales directory
+ * @param {string} templateLanguage - Template language code (default: 'en')
  * @returns {Object} Language structure mapping
  */
-export function discoverLanguageStructures(localesDir) {
+export function discoverLanguageStructures(
+  localesDir,
+  templateLanguage = 'en'
+) {
   const languageStructures = {};
 
   try {
@@ -73,7 +76,7 @@ export function discoverLanguageStructures(localesDir) {
       } else if (entry.isFile() && entry.name.endsWith('.json')) {
         // Handle single file languages (legacy support)
         const langCode = path.parse(entry.name).name;
-        if (langCode !== TEMPLATE_LANGUAGE) {
+        if (langCode !== templateLanguage) {
           languageStructures[langCode] = {
             directory: localesDir,
             files: [
@@ -96,22 +99,23 @@ export function discoverLanguageStructures(localesDir) {
 }
 
 /**
- * Gets the template language structure (English or English variant)
+ * Gets the template language structure
  * @param {string} localesDir - Base locales directory
+ * @param {string} templateLanguage - Template language code (default: 'en')
  * @returns {Object} Template structure
  */
-export function getTemplateStructure(localesDir) {
-  // First try to find any English variant (en, en-GB, en-US, etc.)
-  const englishVariants = findEnglishVariants(localesDir);
+export function getTemplateStructure(localesDir, templateLanguage = 'en') {
+  // First try to find the specified template language
+  const templateVariants = findTemplateVariants(localesDir, templateLanguage);
 
-  if (englishVariants.length === 0) {
+  if (templateVariants.length === 0) {
     throw new Error(
-      `No English template language found in ${localesDir}. Expected: en, en-GB, en-US, etc.`
+      `No ${templateLanguage} template language found in ${localesDir}. Expected: ${templateLanguage} or similar variants.`
     );
   }
 
-  // Use the first English variant found
-  const templateLang = englishVariants[0];
+  // Use the first template variant found
+  const templateLang = templateVariants[0];
   const templateDir = path.join(localesDir, templateLang);
 
   // Check if template is a folder
@@ -147,12 +151,13 @@ export function getTemplateStructure(localesDir) {
 }
 
 /**
- * Finds English language variants in the locales directory
+ * Finds template language variants in the locales directory
  * @param {string} localesDir - Base locales directory
- * @returns {Array} Array of English language codes found
+ * @param {string} templateLanguage - Template language code
+ * @returns {Array} Array of template language codes found
  */
-function findEnglishVariants(localesDir) {
-  const englishVariants = [];
+function findTemplateVariants(localesDir, templateLanguage) {
+  const templateVariants = [];
 
   try {
     const entries = fs.readdirSync(localesDir, { withFileTypes: true });
@@ -160,15 +165,21 @@ function findEnglishVariants(localesDir) {
     for (const entry of entries) {
       if (entry.isDirectory()) {
         const langCode = entry.name;
-        // Check if it's an English variant (starts with 'en')
-        if (langCode.startsWith('en')) {
-          englishVariants.push(langCode);
+        // Check if it's a template language variant
+        if (
+          langCode === templateLanguage ||
+          langCode.startsWith(templateLanguage + '-')
+        ) {
+          templateVariants.push(langCode);
         }
       } else if (entry.isFile() && entry.name.endsWith('.json')) {
         const langCode = path.parse(entry.name).name;
-        // Check if it's an English variant (starts with 'en')
-        if (langCode.startsWith('en')) {
-          englishVariants.push(langCode);
+        // Check if it's a template language variant
+        if (
+          langCode === templateLanguage ||
+          langCode.startsWith(templateLanguage + '-')
+        ) {
+          templateVariants.push(langCode);
         }
       }
     }
@@ -179,12 +190,21 @@ function findEnglishVariants(localesDir) {
     );
   }
 
-  // Sort to prioritize 'en' over variants like 'en-GB'
-  return englishVariants.sort((a, b) => {
-    if (a === 'en') return -1;
-    if (b === 'en') return 1;
+  // Sort to prioritize exact match over variants
+  return templateVariants.sort((a, b) => {
+    if (a === templateLanguage) return -1;
+    if (b === templateLanguage) return 1;
     return a.localeCompare(b);
   });
+}
+
+/**
+ * Finds English language variants in the locales directory (legacy)
+ * @param {string} localesDir - Base locales directory
+ * @returns {Array} Array of English language codes found
+ */
+function findEnglishVariants(localesDir) {
+  return findTemplateVariants(localesDir, 'en');
 }
 
 /**

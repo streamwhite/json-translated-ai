@@ -43,6 +43,7 @@ async function main() {
       providerKey,
       providerProxyUrl,
       systemMessage,
+      templateLanguage,
     } = parseArguments();
 
     // Set environment variables from command line if provided
@@ -86,8 +87,10 @@ async function main() {
     await checkAIHealth(model);
 
     // Check if multi-file structure is detected
-    const { languageStructures, templateStructure } =
-      loadLanguageStructures(localesDir);
+    const { languageStructures, templateStructure } = loadLanguageStructures(
+      localesDir,
+      templateLanguage
+    );
     const isMultiFileStructure = Object.values(languageStructures).some(
       (lang) => lang.files.length > 1 || lang.directory !== localesDir
     );
@@ -120,7 +123,7 @@ async function main() {
       );
 
       // Initialize progress tracking
-      const progressBar = initializeLanguageProgress(totalFiles);
+      initializeLanguageProgress(totalFiles);
       console.log('\n📊 Progress:');
 
       // Process languages with multi-file strategy
@@ -137,7 +140,7 @@ async function main() {
       languageFiles = loadTargetLanguages(localesDir, languageFile);
       console.log(`🌍 Processing: ${languageFiles.join(', ')}`);
 
-      englishTemplate = loadEnglishTemplate(localesDir);
+      englishTemplate = loadEnglishTemplate(localesDir, templateLanguage);
 
       // Initialize progress tracking
       const progressBar = initializeLanguageProgress(languageFiles.length);

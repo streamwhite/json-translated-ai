@@ -105,6 +105,22 @@ export const CACHE_CONFIG = {
   DEFAULT_CACHE_FILE: 'translation-cache.json',
 };
 
+// Template language configuration
+export const TEMPLATE_CONFIG = {
+  DEFAULT_TEMPLATE_LANGUAGE: 'en', // Default template language
+  SUPPORTED_TEMPLATE_LANGUAGES: [
+    'en',
+    'en-US',
+    'en-GB',
+    'es',
+    'es-ES',
+    'fr',
+    'fr-FR',
+    'de',
+    'de-DE',
+  ], // Supported template languages
+};
+
 export const API_CONFIG = {
   TIMEOUT: 30000,
   BATCH_TIMEOUT: 60000,
