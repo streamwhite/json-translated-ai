@@ -4,7 +4,7 @@ import { OPTIMIZATION_CONFIG } from './config.js';
 import {
   getAllKeys,
   getExtraKeys,
-  getMissingKeys,
+  getKeysToTranslate,
   getNestedValue,
   keyExists,
   loadLanguageFile,
@@ -42,13 +42,15 @@ export async function processLanguageFileOptimized(
     );
   }
 
-  const missingKeys = getMissingKeys(englishTemplate, targetLang);
+  const keysInfo = getKeysToTranslate(englishTemplate, targetLang);
   const extraKeys = getExtraKeys(englishTemplate, targetLang);
 
   console.log(
     `📊 Total keys in template: ${getAllKeys(englishTemplate).length}`
   );
-  console.log(`📊 Missing keys to translate: ${missingKeys.length}`);
+  console.log(`📊 Missing keys to translate: ${keysInfo.missingKeys.length}`);
+  console.log(`📊 Updated keys to translate: ${keysInfo.updatedKeys.length}`);
+  console.log(`📊 Total keys to translate: ${keysInfo.totalKeys}`);
   console.log(`📊 Extra keys: ${extraKeys.length}`);
 
   if (appliedCount > 0) {
@@ -58,10 +60,10 @@ export async function processLanguageFileOptimized(
     );
   }
 
-  if (missingKeys.length > 0) {
-    console.log('🔍 Translating missing keys only');
+  if (keysInfo.totalKeys > 0) {
+    console.log('🔍 Translating missing and updated keys');
     await processAllBatches(
-      missingKeys,
+      keysInfo.keysToTranslate,
       englishTemplate,
       targetLang,
       lang,
@@ -70,7 +72,7 @@ export async function processLanguageFileOptimized(
 
     saveLanguageFile(localesDir, lang, targetLang);
     console.log(
-      `✅ Updated ${lang}.json with ${missingKeys.length} translated keys`
+      `✅ Updated ${lang}.json with ${keysInfo.totalKeys} translated keys`
     );
   } else {
     console.log(`✅ ${lang}.json is complete`);
@@ -80,7 +82,7 @@ export async function processLanguageFileOptimized(
     console.log('⚠️  Extra keys (not in English template):', extraKeys);
   }
 
-  return { translatedKeys: missingKeys.length, extraKeys };
+  return { translatedKeys: keysInfo.totalKeys, extraKeys };
 }
 
 async function processAllBatches(

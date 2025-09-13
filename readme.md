@@ -18,13 +18,17 @@ A CLI tool that automatically synchronizes and translates JSON translation files
 
 ### 🚀 Advanced Translation Features
 
+- **Multi-File Structure Support**: Organize translations in folders with multiple JSON files per language
 - **Flexible Key Structures**: Full support for both nested and flattened JSON key structures
 - **Multi-Format Language Support**: Supports both 2-letter (ISO 639-1) and 4-letter (ISO 639-1 + ISO 3166-1) language codes
 - **Locale-Specific Translations**: Handle regional variants like `en-US`, `zh-TW`, `es-MX`, `fr-CA` for precise localization
+- **Smart Structure Detection**: Automatically detects single-file or multi-file structures
+- **Folder Structure Preservation**: Maintains exact folder structure across all target languages
+- **Concurrent File Processing**: Process multiple files per language simultaneously
 - **Custom System Messages**: Provide specific context for better translation quality
 - **Parallel Processing**: Multi-language processing with configurable concurrency
 - **Fallback Strategy**: Automatic fallback to individual translations if batch processing fails
-- **Progress Tracking**: Real-time progress bars and detailed logging for scheduling tasks.
+- **Progress Tracking**: Real-time progress bars and detailed logging for scheduling tasks
 - **Comprehensive Reporting**: Detailed reports on translation success, failures, and missing keys
 
 ## 🚀 Quick Start
@@ -64,6 +68,102 @@ jta --preset FAST
 # Specify API key and proxy URL directly
 jta --key your_openrouter_key --url https://openrouter.ai/api/v1
 ```
+
+## 📁 Multi-File Structure Support
+
+The tool now supports organizing translations in multiple JSON files per language, making it perfect for large projects with organized translation structures.
+
+### Single-File Structure (Legacy - Still Supported)
+
+```
+locales/
+├── en.json
+├── es.json
+└── zh-TW.json
+```
+
+### Multi-File Structure (New Feature)
+
+```
+locales/
+├── en/
+│   ├── home.json
+│   ├── products.json
+│   ├── auth.json
+│   └── common.json
+├── es/
+│   ├── home.json
+│   ├── products.json
+│   ├── auth.json
+│   └── common.json
+└── zh-TW/
+    ├── home.json
+    ├── products.json
+    ├── auth.json
+    └── common.json
+```
+
+### Nested Folder Structure
+
+```
+locales/
+├── en/
+│   ├── pages/
+│   │   ├── home.json
+│   │   └── products.json
+│   ├── components/
+│   │   ├── auth.json
+│   │   └── common.json
+│   └── admin/
+│       └── dashboard.json
+├── es/
+│   ├── pages/
+│   │   ├── home.json
+│   │   └── products.json
+│   ├── components/
+│   │   ├── auth.json
+│   │   └── common.json
+│   └── admin/
+│       └── dashboard.json
+└── zh-TW/
+    ├── pages/
+    │   ├── home.json
+    │   └── products.json
+    ├── components/
+    │   ├── auth.json
+    │   └── common.json
+    └── admin/
+        └── dashboard.json
+```
+
+### Key Benefits
+
+- **Better Organization**: Group related translations by feature or page
+- **Easier Maintenance**: Smaller, focused files are easier to manage
+- **Team Collaboration**: Multiple developers can work on different files simultaneously
+- **Scalable Structure**: Easily add new files and folders as project grows
+- **Automatic Detection**: No configuration needed - the system automatically detects your structure
+- **Backward Compatibility**: Existing single-file projects continue to work unchanged
+
+### Usage
+
+Simply run the tool with your multi-file structure:
+
+```bash
+# Multi-file structure - automatically detected
+jta --folder ./locales
+
+# Single-file structure - still works as before
+jta --folder ./locales
+```
+
+The system will:
+
+- ✅ Automatically detect whether you're using single-file or multi-file structure
+- ✅ Process all JSON files in each language folder
+- ✅ Maintain the exact folder structure in target languages
+- ✅ Handle both 2-letter and 4-letter language codes
+- ✅ Process multiple files concurrently for better performance
 
 ## 🤖 Supported AI Models
 
@@ -238,7 +338,7 @@ This project is licensed under the Apache License 2.0.
 
 ## 💼 Support & Hiring
 
-If this project is helpful to you, please help by sharing this tool or hiring me or using our service. [Learn more about me](https://me.orangeredcurve.com/). I, just like you are, need to support a family.
+If this project is helpful to you, please help by sharing this tool or hiring me(I need a job) or using our services. [Learn more about me](https://me.orangeredcurve.com/). I, just like you are, need to support a family.
 
 ## 🙏 Acknowledgments
 

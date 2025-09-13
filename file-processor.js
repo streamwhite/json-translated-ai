@@ -1,9 +1,20 @@
 import fs from 'fs';
 import path from 'path';
+import {
+  createTargetFilePath,
+  discoverLanguageStructures,
+  findCorrespondingTemplateFile,
+  getTemplateStructure,
+} from './folder-structure-utils.js';
 
 export function getAllKeys(obj, prefix = '') {
   const keys = [];
   for (const key in obj) {
+    // Skip __updated_keys__ arrays as they are metadata, not actual content keys
+    if (key === '__updated_keys__') {
+      continue;
+    }
+
     const fullKey = prefix ? `${prefix}.${key}` : key;
 
     if (Array.isArray(obj[key])) {
@@ -91,6 +102,57 @@ export function getMissingKeys(template, target) {
   return missingKeys;
 }
 
+/**
+ * Gets all keys that need translation (missing + updated keys)
+ * @param {Object} template - Template object
+ * @param {Object} target - Target language object
+ * @returns {Object} Object containing missingKeys, updatedKeys, and keysToTranslate
+ */
+export function getKeysToTranslate(template, target) {
+  const missingKeys = getMissingKeys(template, target);
+  const updatedKeys = getUpdatedKeys(template);
+
+  // Combine missing and updated keys, removing duplicates
+  const keysToTranslate = [...new Set([...missingKeys, ...updatedKeys])];
+
+  return {
+    missingKeys,
+    updatedKeys,
+    keysToTranslate,
+    totalKeys: keysToTranslate.length,
+  };
+}
+
+/**
+ * Extracts updated keys from a template object recursively
+ * @param {Object} obj - Template object to search
+ * @param {string} prefix - Current path prefix
+ * @returns {Array} Array of updated key paths
+ */
+export function getUpdatedKeys(obj, prefix = '') {
+  const updatedKeys = [];
+
+  for (const [key, value] of Object.entries(obj)) {
+    const currentPath = prefix ? `${prefix}.${key}` : key;
+
+    // Check if this object has __updated_keys__ array
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      if (value.__updated_keys__ && Array.isArray(value.__updated_keys__)) {
+        // Add updated keys with proper path composition
+        for (const updatedKey of value.__updated_keys__) {
+          const fullPath = `${currentPath}.${updatedKey}`;
+          updatedKeys.push(fullPath);
+        }
+      }
+
+      // Recursively search nested objects
+      updatedKeys.push(...getUpdatedKeys(value, currentPath));
+    }
+  }
+
+  return updatedKeys;
+}
+
 export function getExtraKeys(template, target) {
   const targetKeys = getAllKeys(target);
   const extraKeys = [];
@@ -104,28 +166,28 @@ export function getExtraKeys(template, target) {
   return extraKeys;
 }
 
-export function loadLanguageFile(localesDir, lang) {
-  const filePath = path.join(localesDir, `${lang}.json`);
+export function loadLanguageFile(localesDir, lang, filePath = null) {
+  const targetPath = filePath || path.join(localesDir, `${lang}.json`);
   try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    return JSON.parse(fs.readFileSync(targetPath, 'utf8'));
   } catch (error) {
-    console.log(`Error reading ${lang}.json:`, error.message);
+    console.log(`Error reading ${targetPath}:`, error.message);
     return {};
   }
 }
 
-export function saveLanguageFile(localesDir, lang, data) {
-  const filePath = path.join(localesDir, `${lang}.json`);
+export function saveLanguageFile(localesDir, lang, data, filePath = null) {
+  const targetPath = filePath || path.join(localesDir, `${lang}.json`);
   try {
     // Ensure locales directory exists before writing
-    const dir = path.dirname(filePath);
+    const dir = path.dirname(targetPath);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+    fs.writeFileSync(targetPath, JSON.stringify(data, null, 2), 'utf8');
     return true;
   } catch (error) {
-    console.log(`Error writing ${lang}.json:`, error.message);
+    console.log(`Error writing ${targetPath}:`, error.message);
     return false;
   }
 }
@@ -168,4 +230,81 @@ export function findKeysWithValue(obj, targetValue, prefix = '') {
   }
 
   return keys;
+}
+
+/**
+ * Loads all language structures from the locales directory
+ * @param {string} localesDir - Base locales directory
+ * @returns {Object} Language structures and template structure
+ */
+export function loadLanguageStructures(localesDir) {
+  const languageStructures = discoverLanguageStructures(localesDir);
+  const templateStructure = getTemplateStructure(localesDir);
+
+  return {
+    languageStructures,
+    templateStructure,
+  };
+}
+
+/**
+ * Loads a specific language file with its template
+ * @param {string} localesDir - Base locales directory
+ * @param {string} langCode - Language code
+ * @param {Object} fileInfo - File information object
+ * @param {Object} templateStructure - Template structure
+ * @returns {Object} Language data and template data
+ */
+export function loadLanguageFileWithTemplate(
+  localesDir,
+  langCode,
+  fileInfo,
+  templateStructure
+) {
+  const templateFile = findCorrespondingTemplateFile(
+    fileInfo,
+    templateStructure
+  );
+
+  if (!templateFile) {
+    throw new Error(
+      `No template file found for ${langCode}/${fileInfo.relativePath}`
+    );
+  }
+
+  const targetFilePath = createTargetFilePath(
+    localesDir,
+    langCode,
+    fileInfo.relativePath
+  );
+  const languageData = loadLanguageFile(localesDir, langCode, targetFilePath);
+  const templateData = loadLanguageFile(
+    localesDir,
+    'en',
+    templateFile.fullPath
+  );
+
+  return {
+    languageData,
+    templateData,
+    targetFilePath,
+    templateFilePath: templateFile.fullPath,
+  };
+}
+
+/**
+ * Saves language file data to the correct path
+ * @param {string} localesDir - Base locales directory
+ * @param {string} langCode - Language code
+ * @param {Object} data - Language data to save
+ * @param {Object} fileInfo - File information object
+ * @returns {boolean} Success status
+ */
+export function saveLanguageFileWithPath(localesDir, langCode, data, fileInfo) {
+  const targetFilePath = createTargetFilePath(
+    localesDir,
+    langCode,
+    fileInfo.relativePath
+  );
+  return saveLanguageFile(localesDir, langCode, data, targetFilePath);
 }

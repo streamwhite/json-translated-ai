@@ -8,7 +8,8 @@
   "hero": {
     "title": "Welcome to Our Platform",
     "subtitle": "The best solution for your needs",
-    "cta": "Get Started"
+    "cta": "Get Started",
+    "__updated_keys__": ["title"]
   },
   "common": {
     "loading": "Loading...",

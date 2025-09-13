@@ -8,8 +8,13 @@ import {
   validateEnvironment,
   validateSettings,
 } from './cli-interface.js';
-import { loadEnglishTemplate } from './file-processor.js';
+import {
+  loadEnglishTemplate,
+  loadLanguageStructures,
+} from './file-processor.js';
+import { validateLanguageStructures } from './folder-structure-utils.js';
 import { loadTargetLanguages } from './language-loader.js';
+import { processLanguagesWithStrategy as processMultiFileLanguagesWithStrategy } from './multi-file-parallel-processor.js';
 import { processLanguagesWithStrategy } from './parallel-processor.js';
 import { applyPreset } from './performance-config.js';
 import {
@@ -80,29 +85,87 @@ async function main() {
     validateEnvironment();
     await checkAIHealth(model);
 
-    // Load target languages and English template
-    const languageFiles = loadTargetLanguages(localesDir, languageFile);
-    console.log(`🌍 Processing: ${languageFiles.join(', ')}`);
-
-    const englishTemplate = loadEnglishTemplate(localesDir);
-
-    // Initialize progress tracking
-    const progressBar = initializeLanguageProgress(languageFiles.length);
-    console.log('\n📊 Progress:');
-
-    // Process languages with appropriate strategy
-    const results = await processLanguagesWithStrategy(
-      languageFiles,
-      localesDir,
-      englishTemplate,
-      progressBar,
-      model
+    // Check if multi-file structure is detected
+    const { languageStructures, templateStructure } =
+      loadLanguageStructures(localesDir);
+    const isMultiFileStructure = Object.values(languageStructures).some(
+      (lang) => lang.files.length > 1 || lang.directory !== localesDir
     );
 
+    let results;
+    let languageFiles;
+    let englishTemplate;
+
+    if (isMultiFileStructure) {
+      console.log('📁 Multi-file structure detected');
+
+      // Validate language structures
+      const validation = validateLanguageStructures(
+        languageStructures,
+        templateStructure
+      );
+      if (!validation.valid) {
+        console.error('❌ Language structure validation failed:');
+        validation.errors.forEach((error) => console.error(`   ${error}`));
+        process.exit(1);
+      }
+
+      const languageCodes = Object.keys(languageStructures);
+      console.log(`🌍 Processing languages: ${languageCodes.join(', ')}`);
+
+      // Count total files for progress tracking
+      const totalFiles = Object.values(languageStructures).reduce(
+        (sum, lang) => sum + lang.files.length,
+        0
+      );
+
+      // Initialize progress tracking
+      const progressBar = initializeLanguageProgress(totalFiles);
+      console.log('\n📊 Progress:');
+
+      // Process languages with multi-file strategy
+      results = await processMultiFileLanguagesWithStrategy(
+        languageStructures,
+        templateStructure,
+        localesDir,
+        model
+      );
+    } else {
+      console.log('📄 Single-file structure detected');
+
+      // Load target languages and English template (legacy mode)
+      languageFiles = loadTargetLanguages(localesDir, languageFile);
+      console.log(`🌍 Processing: ${languageFiles.join(', ')}`);
+
+      englishTemplate = loadEnglishTemplate(localesDir);
+
+      // Initialize progress tracking
+      const progressBar = initializeLanguageProgress(languageFiles.length);
+      console.log('\n📊 Progress:');
+
+      // Process languages with appropriate strategy
+      results = await processLanguagesWithStrategy(
+        languageFiles,
+        localesDir,
+        englishTemplate,
+        progressBar,
+        model
+      );
+    }
+
     // Generate reports and summaries
-    generateFinalSummary(localesDir, languageFiles, englishTemplate);
-    showMissingKeyAnalysis(localesDir, languageFiles, englishTemplate);
-    generateProcessingReport(results);
+    if (isMultiFileStructure) {
+      // For multi-file structure, generate summary based on results
+      const languageCodes = Object.keys(languageStructures);
+      generateFinalSummary(localesDir, languageCodes, templateStructure);
+      showMissingKeyAnalysis(localesDir, languageCodes, templateStructure);
+      generateProcessingReport(results);
+    } else {
+      // For single-file structure (legacy)
+      generateFinalSummary(localesDir, languageFiles, englishTemplate);
+      showMissingKeyAnalysis(localesDir, languageFiles, englishTemplate);
+      generateProcessingReport(results);
+    }
 
     // Generate translation failures report
     const failuresReportPath = translationFailureReporter.generateReport();

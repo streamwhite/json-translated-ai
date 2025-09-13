@@ -80,6 +80,7 @@ export const OPTIMIZATION_CONFIG = {
   BATCH_SIZE: 15, // Increased from 10 for better efficiency
   MAX_CONCURRENT_LANGUAGES: 5, // Increased from 3 for better parallelization
   MAX_CONCURRENT_BATCHES: 4, // Increased from 2 for better batch processing
+  MAX_CONCURRENT_FILES: 3, // Maximum concurrent files per language
 
   // ⚡ Rate Limiting - Optimized for speed while respecting limits
   MIN_DELAY_BETWEEN_BATCHES: 200, // Reduced from 500 for faster processing

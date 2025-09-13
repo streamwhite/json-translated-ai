@@ -1,0 +1,9 @@
+{
+  "loading": "Loading...",
+  "error": "An error occurred",
+  "success": "Success!",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit"
+}
