@@ -14,7 +14,7 @@ A CLI tool that automatically synchronizes and translates JSON translation files
 - **Smart Model Selection**: Choose from cost-effective models like Claude Haiku, GPT-4o Mini, and Gemini Flash.
 - **Intelligent Caching**: Use cache first to avoid re-translating existing content to minimize API costs
 - **Batch Processing**: Optimize API usage with efficient batch translations
-- **Performance Presets**: Configure for your API limits and budget
+- **Performance Presets**: Configure for your API limits
 
 ### 🚀 Advanced Translation Features
 
@@ -22,7 +22,6 @@ A CLI tool that automatically synchronizes and translates JSON translation files
 - **Flexible Key Structures**: Full support for both nested and flattened JSON key structures
 - **Multi-Format Language Support**: Supports both 2-letter (ISO 639-1) and 4-letter (ISO 639-1 + ISO 3166-1) language codes
 - **Locale-Specific Translations**: Handle regional variants like `en-US`, `zh-TW`, `es-MX`, `fr-CA` for precise localization
-- **Smart Structure Detection**: Automatically detects single-file or multi-file structures
 - **Folder Structure Preservation**: Maintains exact folder structure across all target languages
 - **Concurrent File Processing**: Process multiple files per language simultaneously
 - **Custom System Messages**: Provide specific context for better translation quality
@@ -41,7 +40,7 @@ npm install -g json-translated-ai
 
 ### 2. Configure OpenRouter
 
-Set your OpenRouter API key and proxy URL in your environment or `.env` file:
+Set your OpenRouter(only OpenRouter tested currently) API key and proxy URL in your environment or `.env` file:
 
 ```bash
 PROVIDER_KEY=your_openrouter_api_key_here
@@ -136,15 +135,6 @@ locales/
         └── dashboard.json
 ```
 
-### Key Benefits
-
-- **Better Organization**: Group related translations by feature or page
-- **Easier Maintenance**: Smaller, focused files are easier to manage
-- **Team Collaboration**: Multiple developers can work on different files simultaneously
-- **Scalable Structure**: Easily add new files and folders as project grows
-- **Automatic Detection**: No configuration needed - the system automatically detects your structure
-- **Backward Compatibility**: Existing single-file projects continue to work unchanged
-
 ### Usage
 
 Simply run the tool with your multi-file structure:
@@ -160,10 +150,7 @@ jta --folder ./locales
 The system will:
 
 - ✅ Automatically detect whether you're using single-file or multi-file structure
-- ✅ Process all JSON files in each language folder
 - ✅ Maintain the exact folder structure in target languages
-- ✅ Handle both 2-letter and 4-letter language codes
-- ✅ Process multiple files concurrently for better performance
 
 ## 🔄 Updated Keys Feature
 
@@ -171,7 +158,7 @@ The tool supports marking keys as updated in template files using `__updated_key
 
 ### Usage
 
-Add `__updated_keys__` arrays to your template objects to mark keys that need re-translation:
+Add `__updated_keys__` arrays to your template objects(deepest) to mark keys that need re-translation:
 
 ```json
 {
@@ -196,21 +183,11 @@ Add `__updated_keys__` arrays to your template objects to mark keys that need re
 - **Cost Efficiency**: Avoid re-translating unchanged content
 - **Precise Control**: Mark exactly which keys need updates
 - **Nested Support**: Works with deeply nested object structures
-- **Metadata Ignored**: `__updated_keys__` fields are automatically ignored in missing key detection
-
-### How It Works
-
-1. **Mark Updated Keys**: Add `__updated_keys__` arrays to objects containing updated keys
-2. **Automatic Detection**: The system automatically finds and processes updated keys
-3. **Combined Processing**: Updated keys are combined with missing keys for translation
-4. **Re-translation**: Marked keys are re-translated even if they exist in target files
 
 ### Best Practices
 
 - Add `__updated_keys__` only to objects where updates occur
-- Use the same path pattern as regular keys (e.g., `hero.title`)
 - Remove `__updated_keys__` arrays after translation is complete
-- Keep `__updated_keys__` arrays minimal for better performance
 
 ## 🌐 Custom Template Language Support
 
@@ -243,10 +220,7 @@ The tool supports both 2-letter and 4-letter language codes:
 
 ### How It Works
 
-1. **Template Detection**: The system looks for the specified template language in your locales directory
-2. **Variant Support**: If the exact language code isn't found, it looks for variants (e.g., `es` will find `es-ES`, `es-MX`, etc.)
-3. **File Structure**: Works with both single-file and multi-file structures
-4. **Fallback**: If no template language is found, it falls back to English (`en`)
+- **Fallback**: If no template language is found, it falls back to English (`en`)
 
 ### Examples
 
@@ -309,7 +283,7 @@ jta --folder ./locales --languages languages.txt --model anthropic/claude-3-haik
 
 ```
 
-short options is supported.
+Short options are supported.
 
 ## ⚙️ Configuration
 
@@ -336,8 +310,6 @@ The tool provides comprehensive output including:
 ### Notes
 
 - The tool automatically handles arrays with dot notation indexing.
-- Supports both 2-letter language codes (like `en.json`) and 4-letter locale codes (like `en-US.json`)
-- Full backward compatibility with existing 2-letter language codes
 
 ### Language-Specific Processing
 
@@ -362,9 +334,6 @@ jta --languages languages.txt
 
 - `es` - Spanish
 - `fr` - French
-- `de` - German
-- `zh` - Chinese
-- `ja` - Japanese
 
 **4-letter codes (ISO 639-1 + ISO 3166-1):**
 
@@ -372,12 +341,6 @@ jta --languages languages.txt
 - `en-GB` - British English
 - `zh-TW` - Traditional Chinese (Taiwan)
 - `zh-CN` - Simplified Chinese (China)
-- `es-MX` - Mexican Spanish
-- `es-ES` - European Spanish
-- `fr-CA` - Canadian French
-- `fr-FR` - French (France)
-- `de-DE` - German (Germany)
-- `de-AT` - Austrian German
 
 The system automatically recognizes the appropriate language name for translation context.
 
@@ -415,27 +378,19 @@ The system message is prepended to the default translation instructions, allowin
    - Ensure `PROVIDER_KEY` is set in environment or `.env` file
    - Ensure `PROVIDER_PROXY_URL` is set to your OpenRouter proxy URL
 
-2. **Rate Limiting**
-
-   - Use `CONSERVATIVE` preset for lower API limits
-   - Reduce concurrent processing in performance config
-
-3. **Model Not Supported**
+2. **Model Not Supported**
 
    - Check available models with `jta --help`
    - Ensure you're using a supported model ID
 
-4. **OpenRouter Connection Issues**
+3. **OpenRouter Connection Issues**
 
    - Verify `PROVIDER_PROXY_URL` is set to `https://openrouter.ai/api/v1`
    - Check network connectivity to OpenRouter endpoint
    - Ensure your OpenRouter API key is valid and has sufficient credits
 
-5. **Language Code Issues**
-   - Use 2-letter codes (e.g., `es`, `fr`) for general language support
-   - Use 4-letter codes (e.g., `en-US`, `zh-TW`) for locale-specific translations
+4. **Language Code Issues**
    - Mix both formats in your `languages.txt` file as needed
-   - Unknown language codes will show a warning but still be processed
 
 ## 🤝 Contributing
 
