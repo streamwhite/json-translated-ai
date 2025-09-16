@@ -1,5 +1,3 @@
-import Anthropic from '@anthropic-ai/sdk';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import OpenAI from 'openai';
 import {
   DEFAULT_MODEL_NAME,
@@ -53,17 +51,6 @@ export function initializeAIClient(model = DEFAULT_MODEL_NAME) {
             'X-Title': 'jta',
           },
         });
-        break;
-
-      case 'anthropic':
-        client = new Anthropic({
-          apiKey: apiKey,
-          baseURL: proxyUrl,
-        });
-        break;
-
-      case 'google':
-        client = new GoogleGenerativeAI(apiKey);
         break;
 
       default:
