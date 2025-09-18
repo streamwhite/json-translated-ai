@@ -3,7 +3,13 @@
     "home": "Home",
     "about": "About",
     "services": "Services",
-    "contact": "Contact"
+    "contact": "Contact",
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "teams": "Teams",
+    "settings": "Settings",
+    "billing": "Billing",
+    "help": "Help"
   },
   "hero": {
     "title": "Welcome to Our Platform",
@@ -14,6 +20,269 @@
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
-    "success": "Success!"
+    "success": "Success!",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "retry": "Retry",
+    "confirm": "Confirm",
+    "search": "Search",
+    "clear": "Clear",
+    "update": "Update",
+    "create": "Create"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signUp": "Create Account",
+    "continueWith": "Continue with {{provider}}",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "resetPassword": "Reset Password",
+    "sendResetLink": "Send reset link",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "rememberMe": "Remember me",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "verifyEmail": "Verify your email",
+    "verificationSent": "We sent a verification link to {{email}}"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Enter a valid email",
+    "minLength": "Must be at least {{count}} characters",
+    "maxLength": "Must be at most {{count}} characters",
+    "passwordMismatch": "Passwords do not match",
+    "invalidFormat": "Invalid format",
+    "tooShort": "Too short",
+    "tooLong": "Too long"
+  },
+  "profile": {
+    "title": "Profile",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "fullName": "Full name",
+    "username": "Username",
+    "phone": "Phone",
+    "language": "Language",
+    "timezone": "Time zone",
+    "updateSuccess": "Profile updated successfully",
+    "updateError": "Failed to update profile"
+  },
+  "settings": {
+    "title": "Settings",
+    "general": "General",
+    "security": "Security",
+    "notifications": "Notifications",
+    "appearance": "Appearance",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "systemTheme": "Use system theme",
+    "language": "App language",
+    "timeFormat": "Time format",
+    "dateFormat": "Date format",
+    "saveSuccess": "Settings saved",
+    "saveError": "Failed to save settings"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "You're all caught up",
+    "markAllRead": "Mark all as read",
+    "newMessage": "You have a new message",
+    "invitation": "You've been invited to {{entity}}",
+    "mention": "{{name}} mentioned you"
+  },
+  "errors": {
+    "unknown": "Something went wrong",
+    "network": "Network error. Check your connection.",
+    "timeout": "Request timed out",
+    "forbidden": "You don't have permission to do this",
+    "notFound": "We couldn't find what you're looking for",
+    "server": "Server error. Please try again later"
+  },
+  "forms": {
+    "name": "Name",
+    "description": "Description",
+    "title": "Title",
+    "optional": "Optional",
+    "submit": "Submit",
+    "reset": "Reset",
+    "placeholderSearch": "Type to search...",
+    "selectOption": "Select an option"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "rowsPerPage": "Rows per page",
+    "of": "of",
+    "page": "Page"
+  },
+  "table": {
+    "empty": "No data available",
+    "actions": "Actions",
+    "columns": "Columns",
+    "filter": "Filter",
+    "sort": "Sort",
+    "downloadCsv": "Download CSV"
+  },
+  "search": {
+    "placeholder": "Search by keyword",
+    "noResults": "No results found",
+    "results": "{{count}} results"
+  },
+  "filters": {
+    "apply": "Apply filters",
+    "reset": "Reset filters",
+    "show": "Show filters",
+    "hide": "Hide filters"
+  },
+  "modals": {
+    "confirmDeleteTitle": "Delete item",
+    "confirmDeleteBody": "Are you sure you want to delete this item? This action cannot be undone.",
+    "confirm": "Yes, delete",
+    "cancel": "Cancel"
+  },
+  "onboarding": {
+    "welcome": "Welcome to {{appName}}",
+    "step1Title": "Create your first project",
+    "step1Desc": "Projects help you organize your work.",
+    "step2Title": "Invite your team",
+    "step2Desc": "Collaborate by inviting teammates.",
+    "step3Title": "Customize settings",
+    "step3Desc": "Tailor the app to your needs."
+  },
+  "dashboard": {
+    "welcomeBack": "Welcome back, {{name}}",
+    "quickActions": "Quick actions",
+    "recentActivity": "Recent activity",
+    "viewAll": "View all"
+  },
+  "footer": {
+    "copyright": "© {{year}} {{company}}. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "dates": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
+    "last7Days": "Last 7 days",
+    "last30Days": "Last 30 days",
+    "customRange": "Custom range"
+  },
+  "time": {
+    "minutes": "{{count}} minutes",
+    "hours": "{{count}} hours",
+    "days": "{{count}} days",
+    "justNow": "Just now"
+  },
+  "file": {
+    "upload": "Upload",
+    "uploading": "Uploading...",
+    "download": "Download",
+    "dragHere": "Drag and drop files here",
+    "maxSize": "Max size: {{size}}",
+    "typesAllowed": "Allowed types: {{types}}"
+  },
+  "billing": {
+    "currentPlan": "Current plan",
+    "changePlan": "Change plan",
+    "paymentMethod": "Payment method",
+    "addPaymentMethod": "Add payment method",
+    "invoices": "Invoices",
+    "downloadInvoice": "Download invoice",
+    "updateSuccess": "Billing details updated",
+    "updateError": "Failed to update billing details"
+  },
+  "subscription": {
+    "trial": "Trial",
+    "active": "Active",
+    "canceled": "Canceled",
+    "pastDue": "Past due",
+    "upgrade": "Upgrade",
+    "downgrade": "Downgrade",
+    "manage": "Manage subscription"
+  },
+  "projects": {
+    "title": "Projects",
+    "new": "New project",
+    "name": "Project name",
+    "createSuccess": "Project created",
+    "createError": "Failed to create project",
+    "empty": "No projects yet"
+  },
+  "teams": {
+    "title": "Teams",
+    "new": "New team",
+    "members": "Members",
+    "invite": "Invite member",
+    "role": "Role",
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Member"
+  },
+  "permissions": {
+    "read": "Read",
+    "write": "Write",
+    "admin": "Admin",
+    "noAccess": "No access"
+  },
+  "api": {
+    "tokens": "API Tokens",
+    "newToken": "New token",
+    "copyToken": "Copy token",
+    "reveal": "Reveal",
+    "scopes": "Scopes",
+    "created": "Token created",
+    "revoked": "Token revoked"
+  },
+  "integrations": {
+    "title": "Integrations",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "connected": "Connected",
+    "notConnected": "Not connected"
+  },
+  "reports": {
+    "title": "Reports",
+    "generate": "Generate report",
+    "export": "Export",
+    "download": "Download report"
+  },
+  "charts": {
+    "line": "Line",
+    "bar": "Bar",
+    "pie": "Pie",
+    "legend": "Legend",
+    "noData": "No chart data"
+  },
+  "importExport": {
+    "import": "Import",
+    "export": "Export",
+    "importSuccess": "Import completed",
+    "importError": "Import failed",
+    "exportSuccess": "Export completed",
+    "exportError": "Export failed"
+  },
+  "emptyStates": {
+    "noItems": "Nothing here yet",
+    "tryCreating": "Try creating a new item to get started"
+  },
+  "help": {
+    "docs": "Documentation",
+    "contactSupport": "Contact support",
+    "community": "Community forum",
+    "status": "System status"
   }
 }
