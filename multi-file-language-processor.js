@@ -120,6 +120,9 @@ export async function processLanguageFile(
       success: false,
       error: error.message,
     };
+  } finally {
+    // Ensure any active spinner is stopped
+    stopTranslationSpinner(true, '');
   }
 }
 

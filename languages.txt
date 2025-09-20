@@ -5,7 +5,32 @@
 # es (2-letter code for Spanish)
 # en-US (4-letter code for American English)
 # zh-TW (4-letter code for Traditional Chinese - Taiwan)
-
 es
-en-GB
-zh-TW
+#fr
+#de
+#it
+#pt
+#nl
+#tr
+#pl
+#cs
+#fi
+#sv
+#no
+#da
+#el
+#uk
+#ms
+#ar
+#ko
+#ja
+#lt
+#ro
+#sr
+#sk
+#hr
+#sl
+#lv
+#et
+#is
+#he

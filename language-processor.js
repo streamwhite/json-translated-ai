@@ -82,6 +82,9 @@ export async function processLanguageFileOptimized(
     console.log('⚠️  Extra keys (not in English template):', extraKeys);
   }
 
+  // Ensure any active spinner is stopped
+  stopTranslationSpinner(true, '');
+
   return { translatedKeys: keysInfo.totalKeys, extraKeys };
 }
 
