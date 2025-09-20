@@ -1,6 +1,9 @@
 import { OPTIMIZATION_CONFIG } from './config.js';
 import { processLanguageFileOptimized } from './language-processor.js';
-import { updateLanguageProgress } from './progress-utils.js';
+import {
+  stopTranslationSpinner,
+  updateLanguageProgress,
+} from './progress-utils.js';
 
 export async function processLanguagesParallel(
   languages,
@@ -49,6 +52,10 @@ export async function processLanguagesParallel(
   });
 
   await Promise.allSettled(promises);
+
+  // Ensure any remaining spinner is stopped
+  stopTranslationSpinner(true, '');
+
   return results;
 }
 
@@ -86,6 +93,9 @@ export async function processLanguagesSequential(
       updateLanguageProgress(Object.keys(results).length, lang, 'Failed');
     }
   }
+
+  // Ensure any remaining spinner is stopped
+  stopTranslationSpinner(true, '');
 
   return results;
 }

@@ -54,6 +54,11 @@ export function updateBatchProgress(current, status) {
 }
 
 export function startTranslationSpinner(text = 'Translating...') {
+  // Stop any existing spinner before starting a new one
+  if (translationSpinner) {
+    translationSpinner.stop();
+    translationSpinner = null;
+  }
   translationSpinner = ora(text).start();
   return translationSpinner;
 }
@@ -66,29 +71,57 @@ export function updateTranslationSpinner(text) {
 
 export function stopTranslationSpinner(success = true, text = '') {
   if (translationSpinner) {
-    if (success) {
-      translationSpinner.succeed(text || 'Translation completed');
-    } else {
-      translationSpinner.fail(text || 'Translation failed');
+    try {
+      if (success) {
+        translationSpinner.succeed(text || 'Translation completed');
+      } else {
+        translationSpinner.fail(text || 'Translation failed');
+      }
+    } catch (error) {
+      // If there's an error stopping the spinner, just stop it silently
+      try {
+        translationSpinner.stop();
+      } catch (stopError) {
+        // Ignore stop errors
+      }
     }
     translationSpinner = null;
   }
 }
 
 export function stopAllProgress() {
-  if (languageProgressBar) {
-    languageProgressBar.stop();
-    languageProgressBar = null;
+  try {
+    if (languageProgressBar) {
+      languageProgressBar.stop();
+      languageProgressBar = null;
+    }
+  } catch (error) {
+    // Ignore errors stopping language progress bar
   }
-  if (batchProgressBar) {
-    batchProgressBar.stop();
-    batchProgressBar = null;
+
+  try {
+    if (batchProgressBar) {
+      batchProgressBar.stop();
+      batchProgressBar = null;
+    }
+  } catch (error) {
+    // Ignore errors stopping batch progress bar
   }
-  if (translationSpinner) {
-    translationSpinner.stop();
-    translationSpinner = null;
+
+  try {
+    if (translationSpinner) {
+      translationSpinner.stop();
+      translationSpinner = null;
+    }
+  } catch (error) {
+    // Ignore errors stopping translation spinner
   }
-  multibar.stop();
+
+  try {
+    multibar.stop();
+  } catch (error) {
+    // Ignore errors stopping multibar
+  }
 }
 
 export function createSimpleProgressBar(total, description = 'Progress') {

@@ -1,6 +1,9 @@
 import { OPTIMIZATION_CONFIG } from './config.js';
 import { processLanguageFile } from './multi-file-language-processor.js';
-import { updateLanguageProgress } from './progress-utils.js';
+import {
+  stopTranslationSpinner,
+  updateLanguageProgress,
+} from './progress-utils.js';
 
 /**
  * Processes all files for a single language concurrently
@@ -108,6 +111,9 @@ export async function processLanguageFiles(
   if (results.errors.length > 0) {
     console.log(`   Errors: ${results.errors.length}`);
   }
+
+  // Ensure any remaining spinner is stopped
+  stopTranslationSpinner(true, '');
 
   return results;
 }

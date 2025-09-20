@@ -1,37 +1,5 @@
 # Multi-File Translation Workflow in Translation Sync System
 
-## Overview
-
-The translation system now supports both single-file and multi-file structures with automatic detection, concurrent processing, intelligent template matching, updated keys handling, and robust progress tracking with proper cleanup.
-
-## Key Features
-
-### Updated Keys Feature
-
-The system supports marking keys as updated in template files using `__updated_keys__` arrays. When a key is marked as updated, it will be re-translated in all target language files, even if it already exists.
-
-### Progress Tracking & Spinner Management
-
-- **Multi-level Progress Tracking**: Language-level, batch-level, and translation-level progress indicators
-- **Spinner Cleanup**: Automatic cleanup of translation spinners to prevent stuck progress indicators
-- **Concurrent Processing**: Parallel processing with semaphore-based concurrency control
-- **Template-Driven Cache**: Cache application follows template structure for systematic processing
-
-### Usage Example
-
-```json
-{
-  "hero": {
-    "title": "Welcome to Our Platform",
-    "subtitle": "The best solution for your needs",
-    "cta": "Get Started",
-    "__updated_keys__": ["title"]
-  }
-}
-```
-
-In this example, the `title` key will be re-translated in all target language files, even if it already exists, because it's marked in the `__updated_keys__` array.
-
 ## Flow Chart
 
 ```mermaid
@@ -64,7 +32,7 @@ flowchart TD
     U -->|Yes| V[📦 Create Translation Batches]
     U -->|No| W[✅ File Complete]
 
-    V --> X[🔄 Start Translation Spinner]
+    V --> X[🔄 Start Translation Spinner Safely]
     X --> Y[🤖 Batch Translation via AI API]
     Y --> Z{❌ Translation Failed?}
 
@@ -86,28 +54,29 @@ flowchart TD
     HH -->|No| BB
 
     II --> BB
-    BB --> JJ[🔄 Stop Translation Spinner]
+    BB --> JJ[🔄 Stop Translation Spinner Safely]
     JJ --> KK[💾 Save Language File with Path]
     KK --> LL[✅ File Processing Complete]
 
     W --> LL
     LL --> MM{📁 All Files in Language Complete?}
     MM -->|No| Q
-    MM -->|Yes| NN[✅ Language Processing Complete]
+    MM -->|Yes| NN[🔄 Cleanup Language Spinners]
+    NN --> OO[✅ Language Processing Complete]
 
-    NN --> OO{📊 All Languages Complete?}
-    OO -->|No| P
-    OO -->|Yes| PP[📊 Generate Final Summary & Failure Report]
-    PP --> QQ[🔄 Stop All Progress Indicators]
-    QQ --> RR[🎉 Translation Sync Complete]
+    OO --> PP{📊 All Languages Complete?}
+    PP -->|No| P
+    PP -->|Yes| QQ[📊 Generate Final Summary & Failure Report]
+    QQ --> RR[🔄 Stop All Progress Indicators]
+    RR --> SS[🎉 Translation Sync Complete]
 
-    N --> SS[🔄 Process Single-File Languages with Concurrency]
-    O --> TT[🔄 Process Single-File Languages Sequentially]
-    SS --> UU[📄 Process Single Language File]
-    TT --> UU
-    UU --> R
+    N --> TT[🔄 Process Single-File Languages with Concurrency]
+    O --> UU[🔄 Process Single-File Languages Sequentially]
+    TT --> VV[📄 Process Single Language File]
+    UU --> VV
+    VV --> R
 
-    J --> VV[❌ Exit with Error]
+    J --> WW[❌ Exit with Error]
 
     style F fill:#e1f5fe
     style G fill:#f3e5f5
@@ -131,57 +100,11 @@ flowchart TD
     style JJ fill:#e3f2fd
     style LL fill:#e8f5e8
     style MM fill:#e8f5e8
-    style NN fill:#e8f5e8
+    style NN fill:#e3f2fd
     style OO fill:#e8f5e8
+    style PP fill:#e8f5e8
     style QQ fill:#e3f2fd
-    style RR fill:#e8f5e8
+    style RR fill:#e3f2fd
+    style SS fill:#e8f5e8
     style J fill:#ffebee
 ```
-
-## Technical Implementation Details
-
-### Progress Tracking System
-
-The system uses a multi-layered progress tracking approach:
-
-1. **Language Progress Bar**: Tracks overall progress across all languages
-2. **Batch Progress Bar**: Tracks progress within each language file's batches
-3. **Translation Spinner**: Shows real-time status of individual translation operations
-
-### Spinner Management & Cleanup
-
-- **Automatic Cleanup**: All spinners are automatically stopped at the end of each language file processing
-- **Error Handling**: Spinners are properly cleaned up even when errors occur using `finally` blocks
-- **Multi-Language Support**: Prevents stuck spinners when processing multiple languages in parallel
-
-### Concurrency Control
-
-- **Semaphore-Based**: Uses semaphores to control concurrent processing
-- **Configurable Limits**: Maximum concurrent languages and files can be configured
-- **Resource Management**: Prevents overwhelming the AI API with too many concurrent requests
-
-### Cache System
-
-- **Template-Driven**: Cache application follows the template structure systematically
-- **Key Validation**: Ensures all template keys are processed and missing translations are identified
-- **Performance Optimization**: Reduces redundant API calls by reusing cached translations
-
-### Error Handling & Fallback Strategy
-
-1. **Batch Translation**: Primary method for efficiency
-2. **Retry Mechanism**: Automatic retry with exponential backoff
-3. **Individual Fallback**: Falls back to individual translations if batch fails
-4. **English Fallback**: Uses English text as last resort and records failures
-
-### Supported AI Models
-
-- **OpenAI**: GPT-4o, GPT-4o Mini, GPT-4.1
-- **Anthropic**: Claude 3.5 Sonnet, Claude 3 Haiku
-- **Google**: Gemini 2.5 Flash
-
-### Performance Optimizations
-
-- **Parallel Processing**: Concurrent language and file processing
-- **Batch Translation**: Groups multiple keys for efficient API usage
-- **Rate Limiting**: Configurable delays between batches
-- **Memory Management**: Efficient handling of large translation files
