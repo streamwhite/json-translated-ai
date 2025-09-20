@@ -55,19 +55,16 @@ async function main() {
     }
     if (systemMessage) {
       process.env.CUSTOM_SYSTEM_MESSAGE = systemMessage;
-      console.log(`📝 Using custom system message: "${systemMessage}"`);
     }
 
     // Validate model
     validateModel(model);
     const modelConfig = (await import('./config.js')).SUPPORTED_MODELS[model];
-    console.log(`🤖 Using: ${modelConfig.name}`);
 
     // Apply performance preset if specified
     if (performancePreset) {
       try {
         applyPreset(performancePreset);
-        console.log(`⚡ Preset: ${performancePreset}`);
       } catch (error) {
         console.error(
           `❌ Error applying preset ${performancePreset}:`,
@@ -100,8 +97,6 @@ async function main() {
     let englishTemplate;
 
     if (isMultiFileStructure) {
-      console.log('📁 Multi-file structure detected');
-
       // Validate language structures
       const validation = validateLanguageStructures(
         languageStructures,
@@ -114,7 +109,6 @@ async function main() {
       }
 
       const languageCodes = Object.keys(languageStructures);
-      console.log(`🌍 Processing languages: ${languageCodes.join(', ')}`);
 
       // Count total files for progress tracking
       const totalFiles = Object.values(languageStructures).reduce(
@@ -124,7 +118,6 @@ async function main() {
 
       // Initialize progress tracking
       initializeLanguageProgress(totalFiles);
-      console.log('\n📊 Progress:');
 
       // Process languages with multi-file strategy
       results = await processMultiFileLanguagesWithStrategy(
@@ -134,17 +127,12 @@ async function main() {
         model
       );
     } else {
-      console.log('📄 Single-file structure detected');
-
       // Load target languages and English template (legacy mode)
       languageFiles = loadTargetLanguages(localesDir, languageFile);
-      console.log(`🌍 Processing: ${languageFiles.join(', ')}`);
-
       englishTemplate = loadEnglishTemplate(localesDir, templateLanguage);
 
       // Initialize progress tracking
       const progressBar = initializeLanguageProgress(languageFiles.length);
-      console.log('\n📊 Progress:');
 
       // Process languages with appropriate strategy
       results = await processLanguagesWithStrategy(
@@ -172,9 +160,6 @@ async function main() {
 
     // Generate translation failures report
     const failuresReportPath = translationFailureReporter.generateReport();
-    if (failuresReportPath) {
-      console.log(`📊 Failures report: ${failuresReportPath}`);
-    }
 
     console.log('\n🎉 Translation completed!');
   } catch (error) {

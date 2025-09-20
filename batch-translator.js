@@ -36,15 +36,10 @@ export async function translateBatch(
     checkCacheAndSeparate(validTexts, validKeys);
 
   if (uncachedTexts.length === 0) {
-    console.log(`  📋 Batch cache hit for ${validTexts.length} texts`);
     return createFinalResults(texts, cacheKeys);
   }
 
   if (uncachedTexts.length > 0) {
-    console.log(
-      `  🤖 Batch translating ${uncachedTexts.length} texts (${cachedResults.length} cached)`
-    );
-
     // Note: Spinner management is handled by the calling processBatch function
 
     try {
@@ -115,7 +110,6 @@ export async function translateBatch(
 
       await applyBatchRateLimiting(completion);
       const results = combineResults(texts, translations, uncachedIndices);
-      console.log(`  ✅ Batch translated ${uncachedTexts.length} texts`);
 
       return results;
     } catch (error) {
@@ -237,8 +231,6 @@ async function handleBatchError(
   model,
   retryCount = 0
 ) {
-  console.log(`  ❌ Batch translation error:`, error.message);
-
   // Check if this is a timeout or rate limit error that might be retryable
   const isRetryableError =
     error.message.includes('timeout') ||
@@ -249,7 +241,6 @@ async function handleBatchError(
 
   // Only retry once for retryable errors to avoid infinite loops
   if (isRetryableError && retryCount < 1) {
-    console.log(`  🔄 Attempting retry for batch (attempt ${retryCount + 1})`);
     try {
       // Wait a bit before retrying
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -263,13 +254,12 @@ async function handleBatchError(
         retryCount + 1
       );
     } catch (retryError) {
-      console.log(`  ❌ Retry also failed for batch:`, retryError.message);
+      // Retry failed, continue with fallback logic
     }
   }
 
   // Fallback to individual translations
   if (OPTIMIZATION_CONFIG.ENABLE_INDIVIDUAL_FALLBACK) {
-    console.log(`  🔄 Falling back to individual translations`);
     return await fallbackToIndividualTranslations(
       texts,
       keys,
@@ -302,10 +292,6 @@ async function fallbackToIndividualTranslations(
         );
         fallbackResults[i] = fallbackTranslation;
       } catch (fallbackError) {
-        console.log(
-          `  ❌ Fallback failed for text ${i}:`,
-          fallbackError.message
-        );
         // Record the failure
         const targetFile = `${targetLanguage}.json`;
         translationFailureReporter.recordFailure(targetFile, keys[i], texts[i]);

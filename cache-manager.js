@@ -18,11 +18,6 @@ export function loadCache() {
       translationCache = cacheData.translations || {};
       totalTokensUsed = cacheData.totalTokensUsed || 0;
       totalRequests = cacheData.totalRequests || 0;
-      console.log(
-        `📁 Loaded translation cache with ${
-          Object.keys(translationCache).length
-        } entries (${totalTokensUsed} tokens used, ${totalRequests} requests)`
-      );
     } else {
       // Ensure directory exists and create an empty cache file
       const dir = path.dirname(CACHE_FILE);
@@ -43,7 +38,6 @@ export function loadCache() {
       translationCache = {};
       totalTokensUsed = 0;
       totalRequests = 0;
-      console.log(`🆕 Created new translation cache at: ${CACHE_FILE}`);
     }
   } catch (error) {
     console.log('⚠️  Could not load translation cache, starting fresh');
@@ -66,13 +60,9 @@ export function saveCache() {
 
 export function updateTokenUsage(completion) {
   if (completion?.usage) {
-    const { prompt_tokens, completion_tokens, total_tokens } = completion.usage;
+    const { total_tokens } = completion.usage;
     totalTokensUsed += total_tokens;
     totalRequests += 1;
-
-    console.log(
-      `  📊 Tokens used: ${prompt_tokens}p + ${completion_tokens}c = ${total_tokens}t (Total: ${totalTokensUsed})`
-    );
   }
 }
 
@@ -100,7 +90,6 @@ export function shouldSaveCache() {
 
 export function cleanup() {
   saveCache();
-  console.log('💾 Translation cache saved');
 }
 
 export function getCacheStats() {

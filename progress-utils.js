@@ -72,18 +72,9 @@ export function updateTranslationSpinner(text) {
 export function stopTranslationSpinner(success = true, text = '') {
   if (translationSpinner) {
     try {
-      if (success) {
-        translationSpinner.succeed(text || 'Translation completed');
-      } else {
-        translationSpinner.fail(text || 'Translation failed');
-      }
+      translationSpinner.stop();
     } catch (error) {
-      // If there's an error stopping the spinner, just stop it silently
-      try {
-        translationSpinner.stop();
-      } catch (stopError) {
-        // Ignore stop errors
-      }
+      // Ignore stop errors
     }
     translationSpinner = null;
   }

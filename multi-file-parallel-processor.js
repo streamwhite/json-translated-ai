@@ -21,8 +21,6 @@ export async function processLanguageFiles(
   templateStructure,
   model
 ) {
-  console.log(`\n🌍 Processing ${langCode} with ${files.length} files`);
-
   const results = {
     language: langCode,
     files: {},
@@ -72,9 +70,6 @@ export async function processLanguageFiles(
         result.success ? 'Completed' : 'Failed'
       );
 
-      console.log(
-        `✅ Completed processing ${langCode}/${fileInfo.relativePath}`
-      );
       return result;
     } catch (error) {
       console.error(
@@ -102,16 +97,6 @@ export async function processLanguageFiles(
 
   await Promise.allSettled(filePromises);
 
-  console.log(`\n📊 ${langCode} Summary:`);
-  console.log(`   Files processed: ${Object.keys(results.files).length}`);
-  console.log(`   Total translated keys: ${results.totalTranslatedKeys}`);
-  console.log(`   Total extra keys: ${results.totalExtraKeys}`);
-  console.log(`   Success: ${results.success ? '✅' : '❌'}`);
-
-  if (results.errors.length > 0) {
-    console.log(`   Errors: ${results.errors.length}`);
-  }
-
   // Ensure any remaining spinner is stopped
   stopTranslationSpinner(true, '');
 
@@ -132,10 +117,6 @@ export async function processAllLanguagesParallel(
   localesDir,
   model
 ) {
-  console.log(
-    `🚀 Starting parallel processing with max ${OPTIMIZATION_CONFIG.MAX_CONCURRENT_LANGUAGES} concurrent languages`
-  );
-
   const results = {};
   const semaphore = new Array(
     OPTIMIZATION_CONFIG.MAX_CONCURRENT_LANGUAGES
@@ -163,7 +144,6 @@ export async function processAllLanguagesParallel(
       try {
         const result = await processingPromise;
         results[langCode] = result;
-        console.log(`✅ Completed processing language ${langCode}`);
         return result;
       } catch (error) {
         console.error(`❌ Error processing language ${langCode}:`, error);
@@ -201,12 +181,6 @@ export async function processAllLanguagesSequential(
   localesDir,
   model
 ) {
-  console.log(
-    `🚀 Starting sequential processing for ${
-      Object.keys(languageStructures).length
-    } languages`
-  );
-
   const results = {};
 
   for (const [langCode, langStructure] of Object.entries(languageStructures)) {
@@ -230,7 +204,6 @@ export async function processAllLanguagesSequential(
         langCode,
         'Completed'
       );
-      console.log(`✅ Completed processing language ${langCode}`);
     } catch (error) {
       console.error(`❌ Error processing language ${langCode}:`, error);
       results[langCode] = {
@@ -276,7 +249,6 @@ export async function processLanguagesWithStrategy(
   const useParallel = shouldUseParallelProcessing(languageCount);
 
   if (useParallel) {
-    console.log(`⚡ Using parallel processing for ${languageCount} languages`);
     return await processAllLanguagesParallel(
       languageStructures,
       templateStructure,
@@ -284,9 +256,6 @@ export async function processLanguagesWithStrategy(
       model
     );
   } else {
-    console.log(
-      `🔄 Using sequential processing for ${languageCount} languages`
-    );
     return await processAllLanguagesSequential(
       languageStructures,
       templateStructure,

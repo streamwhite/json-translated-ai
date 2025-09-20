@@ -8,8 +8,6 @@ export async function applyCachedTranslations(targetLang, templateLang, lang) {
   let appliedCount = 0;
   let missingCount = 0;
 
-  console.log(`  🔍 Applying cached translations for ${lang}...`);
-
   // Get all keys from template language file
   const templateKeys = getAllKeys(templateLang);
 
@@ -30,14 +28,6 @@ export async function applyCachedTranslations(targetLang, templateLang, lang) {
         missingCount++;
       }
     }
-  }
-
-  if (appliedCount > 0) {
-    console.log(`  ✅ Applied ${appliedCount} cached translations for ${lang}`);
-  }
-
-  if (missingCount > 0) {
-    console.log(`  ⏭️  ${missingCount} keys need new translation for ${lang}`);
   }
 
   return appliedCount;

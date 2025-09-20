@@ -29,7 +29,6 @@ export async function translateText(
   const cachedTranslation = getCachedTranslation(sanitizedText, targetLanguage);
 
   if (cachedTranslation) {
-    console.log(`  📋 Cache hit for "${text}" → "${cachedTranslation}"`);
     return cachedTranslation;
   }
 
@@ -44,8 +43,6 @@ export async function translateText(
         'AI client not initialized - check PROVIDER_KEY or OPENAI_API_KEY'
       );
     }
-
-    console.log(`  🤖 Translating: "${text}"`);
 
     const prompt = `Translate this text to ${targetLanguage}. Keep it natural and appropriate for the context.`;
     const validatedLanguage = validateLanguageCode(targetLanguage);
@@ -76,7 +73,6 @@ export async function translateText(
     );
 
     const translatedText = validateAndCleanResponse(completion);
-    console.log(`  ✅ Translated: "${text}" → "${translatedText}"`);
 
     updateTokenUsage(completion);
     setCachedTranslation(sanitizedText, targetLanguage, translatedText);
@@ -156,12 +152,9 @@ async function handleTranslationError(
   retryCount,
   model
 ) {
-  console.log(`  ❌ Translation error for "${text}":`, error.message);
-
   // Try retry with the retry package first
   if (retryCount === 0) {
     try {
-      console.log(`  🔄 Attempting retry with retry package for "${text}"`);
       return await retryWithBackoff(
         translateText,
         text,
@@ -170,10 +163,7 @@ async function handleTranslationError(
         model
       );
     } catch (retryError) {
-      console.log(
-        `  ❌ Retry package also failed for "${text}":`,
-        retryError.message
-      );
+      // Retry package failed, continue with fallback logic
     }
   }
 
@@ -201,7 +191,6 @@ async function handleTranslationError(
   // Record the failure and return fallback
   const targetFile = `${targetLanguage}.json`;
   translationFailureReporter.recordFailure(targetFile, key, text);
-  console.log(`  🔄 Falling back to English: "${text}" (failure recorded)`);
   return text;
 }
 
@@ -222,7 +211,6 @@ async function handleRateLimitRetry(
 ) {
   const backoffDelay =
     Math.pow(API_CONFIG.BACKOFF_MULTIPLIER, retryCount) * 1000;
-  console.log(`  ⏳ Rate limited, retrying in ${backoffDelay}ms...`);
   await new Promise((resolve) => setTimeout(resolve, backoffDelay));
   return translateText(text, targetLanguage, key, retryCount + 1, model);
 }
@@ -234,6 +222,5 @@ async function handleTimeoutRetry(
   retryCount,
   model
 ) {
-  console.log(`  ⏳ Request timeout, retrying...`);
   return translateText(text, targetLanguage, key, retryCount + 1, model);
 }

@@ -12,10 +12,6 @@ export async function processLanguagesParallel(
   progressBar,
   model
 ) {
-  console.log(
-    `🚀 Starting parallel processing with max ${OPTIMIZATION_CONFIG.MAX_CONCURRENT_LANGUAGES} concurrent languages`
-  );
-
   const results = {};
   const semaphore = new Array(
     OPTIMIZATION_CONFIG.MAX_CONCURRENT_LANGUAGES
@@ -39,7 +35,6 @@ export async function processLanguagesParallel(
       const result = await processingPromise;
       results[lang] = result;
       updateLanguageProgress(Object.keys(results).length, lang, 'Completed');
-      console.log(`✅ Completed processing ${lang}.json`);
       return result;
     } catch (error) {
       console.error(`❌ Error processing ${lang}.json:`, error);
@@ -66,10 +61,6 @@ export async function processLanguagesSequential(
   progressBar,
   model
 ) {
-  console.log(
-    `🚀 Starting sequential processing for ${languages.length} languages`
-  );
-
   const results = {};
 
   for (const lang of languages) {
@@ -86,7 +77,6 @@ export async function processLanguagesSequential(
         model
       );
       updateLanguageProgress(Object.keys(results).length, lang, 'Completed');
-      console.log(`✅ Completed processing ${lang}.json`);
     } catch (error) {
       console.error(`❌ Error processing ${lang}.json:`, error);
       results[lang] = { error: error.message };
@@ -114,9 +104,6 @@ export async function processLanguagesWithStrategy(
   const useParallel = shouldUseParallelProcessing(languages.length);
 
   if (useParallel) {
-    console.log(
-      `⚡ Using parallel processing for ${languages.length} languages`
-    );
     return await processLanguagesParallel(
       languages,
       localesDir,
@@ -125,9 +112,6 @@ export async function processLanguagesWithStrategy(
       model
     );
   } else {
-    console.log(
-      `🔄 Using sequential processing for ${languages.length} languages`
-    );
     return await processLanguagesSequential(
       languages,
       localesDir,

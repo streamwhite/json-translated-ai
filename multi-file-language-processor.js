@@ -2,11 +2,9 @@ import { translateBatch } from './batch-translator.js';
 import { applyCachedTranslations } from './cache-applier.js';
 import { OPTIMIZATION_CONFIG } from './config.js';
 import {
-  getAllKeys,
   getExtraKeys,
   getKeysToTranslate,
   getNestedValue,
-  keyExists,
   loadLanguageFileWithTemplate,
   saveLanguageFileWithPath,
   setNestedValue,
@@ -38,7 +36,6 @@ export async function processLanguageFile(
   model
 ) {
   const fileName = fileInfo.relativePath;
-  console.log(`\n=== Processing ${langCode}/${fileName} ===`);
 
   try {
     const { languageData, templateData, targetFilePath } =
@@ -55,32 +52,14 @@ export async function processLanguageFile(
       langCode
     );
 
-    if (appliedCount > 0) {
-      console.log(
-        `📊 Applied ${appliedCount} cached translations for ${langCode}/${fileName}`
-      );
-    }
-
     const keysInfo = getKeysToTranslate(templateData, languageData);
     const extraKeys = getExtraKeys(templateData, languageData);
 
-    console.log(
-      `📊 Total keys in template: ${getAllKeys(templateData).length}`
-    );
-    console.log(`📊 Missing keys to translate: ${keysInfo.missingKeys.length}`);
-    console.log(`📊 Updated keys to translate: ${keysInfo.updatedKeys.length}`);
-    console.log(`📊 Total keys to translate: ${keysInfo.totalKeys}`);
-    console.log(`📊 Extra keys: ${extraKeys.length}`);
-
     if (appliedCount > 0) {
       saveLanguageFileWithPath(localesDir, langCode, languageData, fileInfo);
-      console.log(
-        `✅ Updated ${langCode}/${fileName} with ${appliedCount} cached translations`
-      );
     }
 
     if (keysInfo.totalKeys > 0) {
-      console.log('🔍 Translating missing and updated keys');
       await processAllBatches(
         keysInfo.keysToTranslate,
         templateData,
@@ -91,15 +70,6 @@ export async function processLanguageFile(
       );
 
       saveLanguageFileWithPath(localesDir, langCode, languageData, fileInfo);
-      console.log(
-        `✅ Updated ${langCode}/${fileName} with ${keysInfo.totalKeys} translated keys`
-      );
-    } else {
-      console.log(`✅ ${langCode}/${fileName} is complete`);
-    }
-
-    if (extraKeys.length > 0) {
-      console.log('⚠️  Extra keys (not in template):', extraKeys);
     }
 
     return {
@@ -144,10 +114,6 @@ async function processAllBatches(
   model
 ) {
   const batches = createBatches(missingKeys, OPTIMIZATION_CONFIG.BATCH_SIZE);
-
-  console.log(
-    `📦 Processing ${batches.length} batches of up to ${OPTIMIZATION_CONFIG.BATCH_SIZE} keys each`
-  );
 
   // Initialize batch progress bar
   const batchProgressBar = initializeBatchProgress(
@@ -219,12 +185,6 @@ async function processBatch(
   fileName,
   model
 ) {
-  console.log(
-    `\n🔄 Processing batch ${batchIndex + 1}/${totalBatches} (${
-      batch.length
-    } keys)`
-  );
-
   const englishValues = batch.map((key) => getNestedValue(templateData, key));
 
   // Start translation spinner
@@ -242,8 +202,6 @@ async function processBatch(
 
     batch.forEach((key, index) => {
       setNestedValue(languageData, key, translatedValues[index]);
-      const action = keyExists(languageData, key) ? 'Updated' : 'Added';
-      console.log(`✅ ${action}: ${key} = "${translatedValues[index]}"`);
     });
 
     // Stop spinner with success
@@ -252,11 +210,6 @@ async function processBatch(
       `Batch ${batchIndex + 1} completed successfully`
     );
   } catch (error) {
-    console.log(`❌ Batch translation failed:`, error.message);
-    console.log(
-      `🔄 Falling back to individual translations for batch ${batchIndex + 1}`
-    );
-
     // Stop spinner with failure
     stopTranslationSpinner(
       false,
@@ -315,17 +268,11 @@ async function processBatchFallback(
         model
       );
       setNestedValue(languageData, key, translatedValue);
-      const action = keyExists(languageData, key) ? 'Updated' : 'Added';
-      console.log(`✅ ${action}: ${key} = "${translatedValue}"`);
     } catch (individualError) {
-      console.log(`❌ Failed to translate ${key}:`, individualError.message);
       setNestedValue(languageData, key, englishValue);
       // Record the failure
       const targetFile = `${langCode}/${fileName}`;
       translationFailureReporter.recordFailure(targetFile, key, englishValue);
-      console.log(
-        `🔄 Fallback to English: ${key} = "${englishValue}" (failure recorded)`
-      );
     }
   }
 
