@@ -6,15 +6,15 @@
 # en-US (4-letter code for American English)
 # zh-TW (4-letter code for Traditional Chinese - Taiwan)
 es
-#fr
-#de
-#it
-#pt
-#nl
-#tr
-#pl
-#cs
-#fi
+fr
+de
+it
+pt
+nl
+tr
+pl
+cs
+fi
 #sv
 #no
 #da

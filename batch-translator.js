@@ -7,10 +7,6 @@ import {
 } from './cache-manager.js';
 import { OPTIMIZATION_CONFIG } from './config.js';
 import { validateLanguageCode } from './language-utils.js';
-import {
-  stopTranslationSpinner,
-  updateTranslationSpinner,
-} from './progress-utils.js';
 import { createSystemPrompt } from './system-message-utils.js';
 import { translateText } from './translation-core.js';
 import { translationFailureReporter } from './translation-failure-reporter.js';
@@ -49,10 +45,7 @@ export async function translateBatch(
       `  🤖 Batch translating ${uncachedTexts.length} texts (${cachedResults.length} cached)`
     );
 
-    // Update spinner with batch progress
-    updateTranslationSpinner(
-      `Translating batch of ${uncachedTexts.length} texts...`
-    );
+    // Note: Spinner management is handled by the calling processBatch function
 
     try {
       const client = getAIClient(model);
@@ -124,20 +117,8 @@ export async function translateBatch(
       const results = combineResults(texts, translations, uncachedIndices);
       console.log(`  ✅ Batch translated ${uncachedTexts.length} texts`);
 
-      // Stop the translation spinner since batch is complete
-      stopTranslationSpinner(
-        true,
-        `Batch of ${uncachedTexts.length} texts completed`
-      );
-
       return results;
     } catch (error) {
-      // Stop the translation spinner since batch failed
-      stopTranslationSpinner(
-        false,
-        `Batch translation failed: ${error.message}`
-      );
-
       return await handleBatchError(
         error,
         texts,
@@ -306,10 +287,7 @@ async function fallbackToIndividualTranslations(
   targetLanguage,
   model
 ) {
-  // Update spinner to show fallback processing
-  updateTranslationSpinner(
-    `Falling back to individual translations (${texts.length} texts)`
-  );
+  // Note: Spinner management is handled by the calling processBatch function
 
   const fallbackResults = [];
   for (let i = 0; i < texts.length; i++) {
@@ -338,11 +316,7 @@ async function fallbackToIndividualTranslations(
     }
   }
 
-  // Stop the spinner since fallback processing is complete
-  stopTranslationSpinner(
-    true,
-    `Fallback processing completed (${texts.length} texts)`
-  );
+  // Note: Spinner management is handled by the calling processBatch function
 
   return fallbackResults;
 }

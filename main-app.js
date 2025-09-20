@@ -189,12 +189,14 @@ async function main() {
 // Handle process termination
 process.on('SIGINT', () => {
   console.log('\n🛑 Process interrupted by user');
+  stopAllProgress();
   cleanup();
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
   console.log('\n🛑 Process terminated');
+  stopAllProgress();
   cleanup();
   process.exit(0);
 });
@@ -202,6 +204,7 @@ process.on('SIGTERM', () => {
 // Run the main function
 main().catch((error) => {
   console.error('❌ Unhandled error:', error);
+  stopAllProgress();
   cleanup();
   process.exit(1);
 });
