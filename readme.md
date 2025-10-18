@@ -7,7 +7,7 @@ A CLI tool that automatically synchronizes and translates JSON translation files
 ### 🔒 Privacy & Security
 
 - **100% Private**: Your content never stored except communication with AI providers.
-- **Secure API Keys**: Your API keys are only used for translation requests, never stored. If you still worried, use a specific key and disable it.
+- **Secure API Keys**: Your API keys are only used for translation requests, never stored. If you still worried, use a specific key and disable it upon not using it.
 
 ### 💰 Cost-Effective AI Models
 
